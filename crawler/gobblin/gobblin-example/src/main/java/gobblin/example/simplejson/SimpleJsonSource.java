@@ -73,27 +73,17 @@ public class SimpleJsonSource implements Source<String, String> {
         e.printStackTrace();
     }
 
-    int nameCount = 0;
-    for (String file : Splitter.on(',').omitEmptyStrings().split(filesToPull)) {
-      Iterator it = FileUtils.iterateFiles(new File(file), null, true);
-      while(it.hasNext()) {
-        try{
-          File newFile = (File) it.next();
-	  String basePath = newFile.getCanonicalPath(); // Retrieve absolute path of source
-          Path path = newFile.toPath();
+    try{
+      String intermediateName = "/generated.json";
+      String finalName = tempFileDirAbsolute + intermediateName;
+      FileWriter generated = new FileWriter(finalName);
 
-          // Print filename and associated metadata 
-          System.out.println(basePath);
-          BasicFileAttributes attr = Files.readAttributes(path, BasicFileAttributes.class);
-          System.out.println("  creationTime: " + attr.creationTime());
-          System.out.println("  lastAccessTime: " + attr.lastAccessTime());
-          System.out.println("  lastModifiedTime: " + attr.lastModifiedTime());
-          System.out.println("  isDirectory: " + attr.isDirectory());
-          System.out.println("  isOther: " + attr.isOther());
-          System.out.println("  isRegularFile: " + attr.isRegularFile());
-          System.out.println("  isSymbolicLink: " + attr.isSymbolicLink());
-          System.out.println("  size: " + attr.size()); 
-          System.out.println(" ");
+      for (String file : Splitter.on(',').omitEmptyStrings().split(filesToPull)) {
+        Iterator it = FileUtils.iterateFiles(new File(file), null, true);
+        while(it.hasNext()) {
+          File newFile = (File) it.next();
+          String basePath = newFile.getCanonicalPath(); // Retrieve absolute path of source
+          Path path = newFile.toPath();
 
           //creating intermediate JSON
           JSONObject intermediate = new JSONObject();
@@ -105,28 +95,27 @@ public class SimpleJsonSource implements Source<String, String> {
           intermediate.put("isRegularFile", String.valueOf(attr.isRegularFile()));
           intermediate.put("isSymbolicLink", String.valueOf(attr.isSymbolicLink()));
           intermediate.put("size", String.valueOf(attr.size()));
+          intermediate.put("filename", "" + newFile);
 
-	  // Create intermediate temp file
-          nameCount += 1;
-          String intermediateName = "/generated" + String.valueOf(nameCount) + ".json";
-          String finalName = tempFileDirAbsolute + intermediateName;
-          FileWriter generated = new FileWriter(finalName);
-          generated.write(intermediate.toJSONString());
-          generated.flush();
-          generated.close();
+          // Create intermediate temp file
+          generated.write(intermediate.toJSONString() + "\n");
 
-          // Create one work unit for each file to pull
-          WorkUnit workUnit = new WorkUnit(state, extract);
-          workUnit.setProp(SOURCE_FILE_KEY, finalName);
-          workUnits.add(workUnit);
-        }catch(IOException e){
-            e.printStackTrace();
-        }
-      }
+        } // end while
+      } // end for
+
+      generated.flush();
+      generated.close();
+
+      // Create one work unit for each file to pull
+      WorkUnit workUnit = new WorkUnit(state, extract);
+      workUnit.setProp(SOURCE_FILE_KEY, finalName);
+      workUnits.add(workUnit);
+
       System.out.println(" ");
       System.out.println("----END----");
 
-
+    } catch(IOException e){
+        e.printStackTrace();
     }
 
     return workUnits;
