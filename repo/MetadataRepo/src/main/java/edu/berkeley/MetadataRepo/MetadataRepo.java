@@ -14,6 +14,15 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
+import com.mongodb.Mongo;
+import com.mongodb.MongoException;
+import java.net.UnknownHostException;
+import java.util.Calendar;
+import java.util.List;
+
 /**
  * A class that connects to a MongoDB database and handles all interactions with the database
  */
@@ -137,31 +146,119 @@ public class MetadataRepo
     {
         MongoCollection<Document> collection = database.getCollection(namespace);
 
+        System.out.println("=======================================================================");
+        System.out.println("Namespace: " + namespace);
+        System.out.println("-----------------------------------------------------------------------");
+
+        /*
+        * Note: for timestamp ranges, consider:
+        * Date start = new java.util.Date(2012, 06, 20, 10, 05);
+        * Date end = new java.util.Date(2012, 06, 20, 10, 30);
+        *
+        * BasicDBObject query = new BasicDBObject("Date",
+        *       new BasicDBObject("$gt", start)).
+        *           append("$lte", end) ));
+        * */
+
+        /*
+        BasicDBObject allQuery = new BasicDBObject();
+        BasicDBObject fields = new BasicDBObject();
+        fields.put("file", "a.csv");
+
+        FindIterable<Document> found = collection.find(fields);
+
+        int count = 0;
+        while (found.iterator().hasNext() && count < 10) {
+            count++;
+            System.out.println(found.iterator().next());
+        }
+        */
+
+        /*
+        String time = "01/30/1992";
+        long startTime = 0;
+        long endTime = 0;
+        Date date;
+        SimpleDateFormat sdf  = new SimpleDateFormat("MM/dd/yy");
+        try {
+            date = sdf.parse(time);
+        } catch (ParseException e) {
+            System.out.println("Time should be in MM/dd/yy format.");
+            return;
+        }
+        startTime = date.getTime();
+        endTime = startTime + 86400000;
+
+        BasicDBObject query;
+        query = new BasicDBObject("metadata", new BasicDBObject("$elemMatch",
+                new BasicDBObject(TIMESTAMP, new BasicDBObject("$gt", new Date(startTime))
+                        .append("$lte", new Date(endTime))) ));
+
+        FindIterable<Document> cursor = collection.find(query);
+        MongoCursor k = cursor.iterator();
+        */
+
+        /*
+        Date start = new Date(2015, 03, 20, 10, 05);
+        Date end = new Date(2015, 06, 20, 10, 30);
+
+        BasicDBObject dateQuery = new BasicDBObject("Date",
+                   new BasicDBObject("$gt", start)).
+                   append("$lte", end);
+        BasicDBObject query = new BasicDBObject();
+        //query.put("metadata.__timestamp__", new BasicDBObject("$eq", "Tue Apr 28 01:36:39 PDT 2015"));
+        query.put("metadata.__timestamp__", dateQuery);
+        FindIterable<Document> found = collection.find(query);
+        int count = 0;
+        while (found.iterator().hasNext() && count < 4) {
+            count++;
+            System.out.println(found.iterator().next());
+        }
+        */
+
+
         // Find a document with the given name
         Document fdoc = new Document("file", file);
-        FindIterable<Document> found = collection.find(fdoc);
-        // also consider using collection.findOne, which will return only the first result
-        //   from the result set, and not a MongoCursor that can be iterated over
+        FindIterable<Document> found = collection.find(fdoc);     // Returns "a CURSOR to the documents that match the query criteria"
 
         if (found.iterator().hasNext()) {
-            // If a document is found, it should be the only one
-            Document doc = found.iterator().next();
-            ArrayList<Document> metadataList  = (ArrayList<Document>) doc.get("metadata");
+            System.out.println(found.iterator().next());
+        }
 
+
+        // Note: also consider using collection.findOne, which will return "only the first result
+        //   from the result set, and not a MongoCursor that can be iterated over"
+
+//        if (found.iterator().hasNext()) {
+            // Comment from Enrico:
+            //  "You can query mongodb to return only one set of metadata,
+            //   like for example, only the most recent metadata.
+            //   Right now, you make mongodb return ALL metadata,
+            //   and then you are taking the last one only, which is not efficient."
+
+            // If a document is found, it should be the only one
+//            Document doc = found.iterator().next();
+
+
+//            ArrayList<Document> metadataList  = (ArrayList<Document>) doc.get("metadata");
             /*
             // This section of code would show ALL metadata commits ever
             System.out.println("Metadata for " + file + ":");
             for (Document d : metadataList)
                 System.out.println(d.toJson());
             */
-            System.out.println("Most recent metadata for " + file + ":");
+//            System.out.println("Most recent metadata for " + file + ":");
 
             // Get size of metadata array (last element should be the most up-to-date entry)
-            int currMetadataIndex = metadataList.size() - 1;
-            
-            System.out.println(metadataList.get(currMetadataIndex).toJson());
-        }
-        else { System.out.println("No file with that name."); }
+//            int currMetadataIndex = metadataList.size() - 1;
+
+//            System.out.println(metadataList.get(currMetadataIndex).toJson());
+//        }
+//        else {
+//            System.out.println("No file with the name: " + file + ".");
+//        }
+
+        System.out.println("=======================================================================");
     }
 
     /**

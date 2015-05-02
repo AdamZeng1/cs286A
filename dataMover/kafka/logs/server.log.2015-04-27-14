@@ -1,0 +1,6 @@
+[2015-04-27 14:28:35,283] INFO 0 successfully elected as leader (kafka.server.ZookeeperLeaderElector)
+[2015-04-27 14:28:35,297] INFO re-registering broker info in ZK for broker 0 (kafka.server.KafkaHealthcheck)
+[2015-04-27 14:28:40,326] INFO Registered broker 0 at path /brokers/ids/0 with address fe80:0:0:0:bae8:56ff:fe42:32b2%4:9092. (kafka.utils.ZkUtils$)
+[2015-04-27 14:28:40,326] INFO done re-registering broker (kafka.server.KafkaHealthcheck)
+[2015-04-27 14:28:40,326] INFO Subscribing to /brokers/topics path to watch for new topics (kafka.server.KafkaHealthcheck)
+[2015-04-27 14:28:40,344] INFO New leader is 0 (kafka.server.ZookeeperLeaderElector$LeaderChangeListener)

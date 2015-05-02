@@ -1,0 +1,2 @@
+[2015-04-26 07:46:39,855] INFO 0 successfully elected as leader (kafka.server.ZookeeperLeaderElector)
+[2015-04-26 07:46:39,878] INFO New leader is 0 (kafka.server.ZookeeperLeaderElector$LeaderChangeListener)

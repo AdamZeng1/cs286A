@@ -1249,8 +1249,6 @@ products:
    core/src/main/scala/kafka/javaapi/TopicMetadata.scala -> core/build/classes/main/kafka/javaapi/TopicMetadata.class
    core/src/main/scala/kafka/javaapi/TopicMetadataRequest.scala -> core/build/classes/main/kafka/javaapi/TopicMetadataRequest.class
    core/src/main/scala/kafka/javaapi/TopicMetadataResponse.scala -> core/build/classes/main/kafka/javaapi/TopicMetadataResponse.class
-   core/src/main/scala/kafka/javaapi/consumer/ConsumerConnector.java -> core/build/classes/main/kafka/javaapi/consumer/ConsumerConnector.class
-   core/src/main/scala/kafka/javaapi/consumer/ConsumerRebalanceListener.java -> core/build/classes/main/kafka/javaapi/consumer/ConsumerRebalanceListener.class
    core/src/main/scala/kafka/javaapi/consumer/SimpleConsumer.scala -> core/build/classes/main/kafka/javaapi/consumer/SimpleConsumer.class
    core/src/main/scala/kafka/javaapi/consumer/ZookeeperConsumerConnector.scala -> core/build/classes/main/kafka/javaapi/consumer/ZookeeperConsumerConnector$$anonfun$createMessageStreams$1.class
    core/src/main/scala/kafka/javaapi/consumer/ZookeeperConsumerConnector.scala -> core/build/classes/main/kafka/javaapi/consumer/ZookeeperConsumerConnector$$anonfun$createMessageStreams$2$$anonfun$apply$1.class
@@ -2469,14 +2467,6 @@ products:
    core/src/main/scala/kafka/tools/JmxTool.scala -> core/build/classes/main/kafka/tools/JmxTool$$anonfun$queryAttributes$1.class
    core/src/main/scala/kafka/tools/JmxTool.scala -> core/build/classes/main/kafka/tools/JmxTool$.class
    core/src/main/scala/kafka/tools/JmxTool.scala -> core/build/classes/main/kafka/tools/JmxTool.class
-   core/src/main/scala/kafka/tools/KafkaMigrationTool.java -> core/build/classes/main/kafka/tools/KafkaMigrationTool$1.class
-   core/src/main/scala/kafka/tools/KafkaMigrationTool.java -> core/build/classes/main/kafka/tools/KafkaMigrationTool$MigrationThread.class
-   core/src/main/scala/kafka/tools/KafkaMigrationTool.java -> core/build/classes/main/kafka/tools/KafkaMigrationTool$ParentLastURLClassLoader$ChildURLClassLoader.class
-   core/src/main/scala/kafka/tools/KafkaMigrationTool.java -> core/build/classes/main/kafka/tools/KafkaMigrationTool$ParentLastURLClassLoader$FindClassClassLoader.class
-   core/src/main/scala/kafka/tools/KafkaMigrationTool.java -> core/build/classes/main/kafka/tools/KafkaMigrationTool$ParentLastURLClassLoader.class
-   core/src/main/scala/kafka/tools/KafkaMigrationTool.java -> core/build/classes/main/kafka/tools/KafkaMigrationTool$ProducerDataChannel.class
-   core/src/main/scala/kafka/tools/KafkaMigrationTool.java -> core/build/classes/main/kafka/tools/KafkaMigrationTool$ProducerThread.class
-   core/src/main/scala/kafka/tools/KafkaMigrationTool.java -> core/build/classes/main/kafka/tools/KafkaMigrationTool.class
    core/src/main/scala/kafka/tools/MirrorMaker.scala -> core/build/classes/main/kafka/tools/MirrorMaker$$anon$1.class
    core/src/main/scala/kafka/tools/MirrorMaker.scala -> core/build/classes/main/kafka/tools/MirrorMaker$$anon$2.class
    core/src/main/scala/kafka/tools/MirrorMaker.scala -> core/build/classes/main/kafka/tools/MirrorMaker$$anonfun$cleanShutdown$1.class
@@ -2695,7 +2685,6 @@ products:
    core/src/main/scala/kafka/utils/CommandLineUtils.scala -> core/build/classes/main/kafka/utils/CommandLineUtils$$anonfun$parseKeyValueArgs$1.class
    core/src/main/scala/kafka/utils/CommandLineUtils.scala -> core/build/classes/main/kafka/utils/CommandLineUtils$.class
    core/src/main/scala/kafka/utils/CommandLineUtils.scala -> core/build/classes/main/kafka/utils/CommandLineUtils.class
-   core/src/main/scala/kafka/utils/Crc32.java -> core/build/classes/main/kafka/utils/Crc32.class
    core/src/main/scala/kafka/utils/DelayedItem.scala -> core/build/classes/main/kafka/utils/DelayedItem.class
    core/src/main/scala/kafka/utils/DoublyLinkedList.scala -> core/build/classes/main/kafka/utils/DoublyLinkedList$$anon$1.class
    core/src/main/scala/kafka/utils/DoublyLinkedList.scala -> core/build/classes/main/kafka/utils/DoublyLinkedList.class
@@ -3203,8 +3192,6 @@ binary dependencies:
    core/src/main/scala/kafka/javaapi/TopicMetadataRequest.scala -> /Users/jialianggu/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.10.4/9aae4cb1802537d604e03688cab744ff47b31a7d/scala-library-2.10.4.jar
    core/src/main/scala/kafka/javaapi/TopicMetadataResponse.scala -> /Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/rt.jar
    core/src/main/scala/kafka/javaapi/TopicMetadataResponse.scala -> /Users/jialianggu/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.10.4/9aae4cb1802537d604e03688cab744ff47b31a7d/scala-library-2.10.4.jar
-   core/src/main/scala/kafka/javaapi/consumer/ConsumerConnector.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/rt.jar
-   core/src/main/scala/kafka/javaapi/consumer/ConsumerRebalanceListener.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/rt.jar
    core/src/main/scala/kafka/javaapi/consumer/SimpleConsumer.scala -> /Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/rt.jar
    core/src/main/scala/kafka/javaapi/consumer/SimpleConsumer.scala -> /Users/jialianggu/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.10.4/9aae4cb1802537d604e03688cab744ff47b31a7d/scala-library-2.10.4.jar
    core/src/main/scala/kafka/javaapi/consumer/ZookeeperConsumerConnector.scala -> /Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/rt.jar
@@ -3476,9 +3463,6 @@ binary dependencies:
    core/src/main/scala/kafka/tools/JmxTool.scala -> /Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/rt.jar
    core/src/main/scala/kafka/tools/JmxTool.scala -> /Users/jialianggu/.gradle/caches/modules-2/files-2.1/net.sf.jopt-simple/jopt-simple/3.2/d625f12ba08083c8c16dcedd5396ec730e9e77ab/jopt-simple-3.2.jar
    core/src/main/scala/kafka/tools/JmxTool.scala -> /Users/jialianggu/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.10.4/9aae4cb1802537d604e03688cab744ff47b31a7d/scala-library-2.10.4.jar
-   core/src/main/scala/kafka/tools/KafkaMigrationTool.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/rt.jar
-   core/src/main/scala/kafka/tools/KafkaMigrationTool.java -> /Users/jialianggu/.gradle/caches/modules-2/files-2.1/log4j/log4j/1.2.16/7999a63bfccbc7c247a9aea10d83d4272bd492c6/log4j-1.2.16.jar
-   core/src/main/scala/kafka/tools/KafkaMigrationTool.java -> /Users/jialianggu/.gradle/caches/modules-2/files-2.1/net.sf.jopt-simple/jopt-simple/3.2/d625f12ba08083c8c16dcedd5396ec730e9e77ab/jopt-simple-3.2.jar
    core/src/main/scala/kafka/tools/MirrorMaker.scala -> /Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/rt.jar
    core/src/main/scala/kafka/tools/MirrorMaker.scala -> /Users/jialianggu/.gradle/caches/modules-2/files-2.1/com.yammer.metrics/metrics-core/2.2.0/f82c035cfa786d3cbec362c38c22a5f5b1bc8724/metrics-core-2.2.0.jar
    core/src/main/scala/kafka/tools/MirrorMaker.scala -> /Users/jialianggu/.gradle/caches/modules-2/files-2.1/net.sf.jopt-simple/jopt-simple/3.2/d625f12ba08083c8c16dcedd5396ec730e9e77ab/jopt-simple-3.2.jar
@@ -3533,7 +3517,6 @@ binary dependencies:
    core/src/main/scala/kafka/utils/CommandLineUtils.scala -> /Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/rt.jar
    core/src/main/scala/kafka/utils/CommandLineUtils.scala -> /Users/jialianggu/.gradle/caches/modules-2/files-2.1/net.sf.jopt-simple/jopt-simple/3.2/d625f12ba08083c8c16dcedd5396ec730e9e77ab/jopt-simple-3.2.jar
    core/src/main/scala/kafka/utils/CommandLineUtils.scala -> /Users/jialianggu/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.10.4/9aae4cb1802537d604e03688cab744ff47b31a7d/scala-library-2.10.4.jar
-   core/src/main/scala/kafka/utils/Crc32.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/rt.jar
    core/src/main/scala/kafka/utils/DelayedItem.scala -> /Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/rt.jar
    core/src/main/scala/kafka/utils/DelayedItem.scala -> /Users/jialianggu/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.10.4/9aae4cb1802537d604e03688cab744ff47b31a7d/scala-library-2.10.4.jar
    core/src/main/scala/kafka/utils/DoublyLinkedList.scala -> /Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/rt.jar
@@ -4270,8 +4253,6 @@ source dependencies:
    core/src/main/scala/kafka/javaapi/TopicMetadataRequest.scala -> core/src/main/scala/kafka/utils/Logging.scala
    core/src/main/scala/kafka/javaapi/TopicMetadataResponse.scala -> core/src/main/scala/kafka/api/TopicMetadataResponse.scala
    core/src/main/scala/kafka/javaapi/TopicMetadataResponse.scala -> core/src/main/scala/kafka/javaapi/TopicMetadata.scala
-   core/src/main/scala/kafka/javaapi/consumer/ConsumerConnector.java -> core/src/main/scala/kafka/consumer/TopicFilter.scala
-   core/src/main/scala/kafka/javaapi/consumer/ConsumerConnector.java -> core/src/main/scala/kafka/serializer/Decoder.scala
    core/src/main/scala/kafka/javaapi/consumer/SimpleConsumer.scala -> core/src/main/scala/kafka/api/FetchRequest.scala
    core/src/main/scala/kafka/javaapi/consumer/SimpleConsumer.scala -> core/src/main/scala/kafka/consumer/SimpleConsumer.scala
    core/src/main/scala/kafka/javaapi/consumer/SimpleConsumer.scala -> core/src/main/scala/kafka/javaapi/FetchRequest.scala
@@ -4993,6 +4974,7 @@ source dependencies:
    core/src/main/scala/kafka/tools/FileConsumer.scala -> core/src/main/scala/kafka/metrics/KafkaMetricsReporter.scala
    core/src/main/scala/kafka/tools/FileConsumer.scala -> core/src/main/scala/kafka/serializer/Decoder.scala
    core/src/main/scala/kafka/tools/FileConsumer.scala -> core/src/main/scala/kafka/tools/ConsoleConsumer.scala
+   core/src/main/scala/kafka/tools/FileConsumer.scala -> core/src/main/scala/kafka/tools/MetadataRepo.java
    core/src/main/scala/kafka/tools/FileConsumer.scala -> core/src/main/scala/kafka/utils/CommandLineUtils.scala
    core/src/main/scala/kafka/tools/FileConsumer.scala -> core/src/main/scala/kafka/utils/Logging.scala
    core/src/main/scala/kafka/tools/FileConsumer.scala -> core/src/main/scala/kafka/utils/Utils.scala
@@ -5020,10 +5002,6 @@ source dependencies:
    core/src/main/scala/kafka/tools/ImportZkOffsets.scala -> core/src/main/scala/kafka/utils/ZkUtils.scala
    core/src/main/scala/kafka/tools/JmxTool.scala -> core/src/main/scala/kafka/utils/CommandLineUtils.scala
    core/src/main/scala/kafka/tools/JmxTool.scala -> core/src/main/scala/kafka/utils/Logging.scala
-   core/src/main/scala/kafka/tools/KafkaMigrationTool.java -> core/src/main/scala/kafka/javaapi/producer/Producer.scala
-   core/src/main/scala/kafka/tools/KafkaMigrationTool.java -> core/src/main/scala/kafka/producer/KeyedMessage.scala
-   core/src/main/scala/kafka/tools/KafkaMigrationTool.java -> core/src/main/scala/kafka/producer/ProducerConfig.scala
-   core/src/main/scala/kafka/tools/KafkaMigrationTool.java -> core/src/main/scala/kafka/utils/Utils.scala
    core/src/main/scala/kafka/tools/MirrorMaker.scala -> core/src/main/scala/kafka/consumer/ConsumerConfig.scala
    core/src/main/scala/kafka/tools/MirrorMaker.scala -> core/src/main/scala/kafka/consumer/ConsumerIterator.scala
    core/src/main/scala/kafka/tools/MirrorMaker.scala -> core/src/main/scala/kafka/consumer/KafkaStream.scala
@@ -6446,8 +6424,6 @@ class names:
    core/src/main/scala/kafka/javaapi/TopicMetadata.scala -> kafka.javaapi.TopicMetadata
    core/src/main/scala/kafka/javaapi/TopicMetadataRequest.scala -> kafka.javaapi.TopicMetadataRequest
    core/src/main/scala/kafka/javaapi/TopicMetadataResponse.scala -> kafka.javaapi.TopicMetadataResponse
-   core/src/main/scala/kafka/javaapi/consumer/ConsumerConnector.java -> kafka.javaapi.consumer.ConsumerConnector
-   core/src/main/scala/kafka/javaapi/consumer/ConsumerRebalanceListener.java -> kafka.javaapi.consumer.ConsumerRebalanceListener
    core/src/main/scala/kafka/javaapi/consumer/SimpleConsumer.scala -> kafka.javaapi.consumer.SimpleConsumer
    core/src/main/scala/kafka/javaapi/consumer/ZookeeperConsumerConnector.scala -> kafka.javaapi.consumer.ZookeeperConsumerConnector
    core/src/main/scala/kafka/javaapi/consumer/ZookeeperConsumerConnector.scala -> kafka.javaapi.consumer.ZookeeperConsumerConnector$$anonfun$createMessageStreams$1
@@ -7666,14 +7642,6 @@ class names:
    core/src/main/scala/kafka/tools/JmxTool.scala -> kafka.tools.JmxTool$$anonfun$queryAttributes$1
    core/src/main/scala/kafka/tools/JmxTool.scala -> kafka.tools.JmxTool$$anonfun$queryAttributes$1$$anonfun$apply$3
    core/src/main/scala/kafka/tools/JmxTool.scala -> kafka.tools.JmxTool$$anonfun$queryAttributes$1$$anonfun$apply$4
-   core/src/main/scala/kafka/tools/KafkaMigrationTool.java -> kafka.tools.KafkaMigrationTool
-   core/src/main/scala/kafka/tools/KafkaMigrationTool.java -> kafka.tools.KafkaMigrationTool$1
-   core/src/main/scala/kafka/tools/KafkaMigrationTool.java -> kafka.tools.KafkaMigrationTool$MigrationThread
-   core/src/main/scala/kafka/tools/KafkaMigrationTool.java -> kafka.tools.KafkaMigrationTool$ParentLastURLClassLoader
-   core/src/main/scala/kafka/tools/KafkaMigrationTool.java -> kafka.tools.KafkaMigrationTool$ParentLastURLClassLoader$ChildURLClassLoader
-   core/src/main/scala/kafka/tools/KafkaMigrationTool.java -> kafka.tools.KafkaMigrationTool$ParentLastURLClassLoader$FindClassClassLoader
-   core/src/main/scala/kafka/tools/KafkaMigrationTool.java -> kafka.tools.KafkaMigrationTool$ProducerDataChannel
-   core/src/main/scala/kafka/tools/KafkaMigrationTool.java -> kafka.tools.KafkaMigrationTool$ProducerThread
    core/src/main/scala/kafka/tools/MirrorMaker.scala -> kafka.tools.MirrorMaker
    core/src/main/scala/kafka/tools/MirrorMaker.scala -> kafka.tools.MirrorMaker$
    core/src/main/scala/kafka/tools/MirrorMaker.scala -> kafka.tools.MirrorMaker$$anon$1
@@ -7892,7 +7860,6 @@ class names:
    core/src/main/scala/kafka/utils/CommandLineUtils.scala -> kafka.utils.CommandLineUtils$$anonfun$checkInvalidArgs$1
    core/src/main/scala/kafka/utils/CommandLineUtils.scala -> kafka.utils.CommandLineUtils$$anonfun$checkRequiredArgs$1
    core/src/main/scala/kafka/utils/CommandLineUtils.scala -> kafka.utils.CommandLineUtils$$anonfun$parseKeyValueArgs$1
-   core/src/main/scala/kafka/utils/Crc32.java -> kafka.utils.Crc32
    core/src/main/scala/kafka/utils/DelayedItem.scala -> kafka.utils.DelayedItem
    core/src/main/scala/kafka/utils/DoublyLinkedList.scala -> kafka.utils.DoublyLinkedList
    core/src/main/scala/kafka/utils/DoublyLinkedList.scala -> kafka.utils.DoublyLinkedList$$anon$1

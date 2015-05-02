@@ -1,0 +1,6 @@
+[2015-04-26 08:47:26,325] INFO [BrokerChangeListener on Controller 0]: Broker change listener fired for path /brokers/ids with children 0 (kafka.controller.ReplicaStateMachine$BrokerChangeListener)
+[2015-04-26 08:47:26,328] INFO [AddPartitionsListener on 0]: Add Partition triggered {"version":1,"partitions":{"0":[0]}} for path /brokers/topics/test (kafka.controller.PartitionStateMachine$AddPartitionsListener)
+[2015-04-26 08:47:26,335] INFO [SessionExpirationListener on 0], ZK expired; shut down all controller components and try to re-elect (kafka.controller.KafkaController$SessionExpirationListener)
+[2015-04-26 08:47:26,335] INFO [Partition state machine on Controller 0]: Stopped partition state machine (kafka.controller.PartitionStateMachine)
+[2015-04-26 08:47:26,335] INFO [Replica state machine on controller 0]: Stopped replica state machine (kafka.controller.ReplicaStateMachine)
+[2015-04-26 08:47:26,335] INFO [Controller 0]: Broker 0 resigned as the controller (kafka.controller.KafkaController)

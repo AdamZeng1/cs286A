@@ -29,6 +29,8 @@ import kafka.utils._
 import kafka.metrics.KafkaMetricsReporter
 import kafka.consumer.{Blacklist,Whitelist,ConsumerConfig,Consumer}
 import java.io._
+import scala.util.parsing.json._
+import scala.collection.immutable.Map
 
 /**
  * Consumer that dumps messages out to standard out.
@@ -168,16 +170,29 @@ object FileConsumer extends Logging {
         stream.slice(0, maxMessages)
       else
         stream
-
+        var repo : MetadataRepo = new MetadataRepo("54.69.1.154")
+        println("Welcome to the Metadata Repo shell!");
       for(messageAndTopic <- iter) {
         try {
       	  val OUTPUTFILE = new PrintStream(new FileOutputStream(new File(OUTPUTFILENAME),true))
 		
 	//MetadataRepo will provide this API
 	// line should be formatted like "commit namespace c.csv {"owner":"Fei"} 1273651276536721"
-	MetadataRepo.execute(line)
+	//MetadataRepo.execute(line)
 
-        //blahblahblah.commit("a.csv", "{numLines:200}", timestamp)  
+        //blahblahblah.commit("a.csv", "{numLines:200}", timestamp)
+        val mess = messageAndTopic.message
+        val str = new String(mess)
+        println(str)
+        val jasonline = JSON.parseFull(str)
+        println(jasonline)
+        val content = jasonline.get.asInstanceOf[Map[String, Any]]
+        println(content)
+        val namespace = content("namespace")
+        val  timestamp = content("timestamp")
+        val filename = content("filename")  
+        repo.commit(namespace.asInstanceOf[String], filename.asInstanceOf[String], str.asInstanceOf[String], timestamp.asInstanceOf[Int].toLong)
+	repo.dump()
 	formatter.writeTo(messageAndTopic.key, messageAndTopic.message, OUTPUTFILE)
           numMessages += 1
         } catch {

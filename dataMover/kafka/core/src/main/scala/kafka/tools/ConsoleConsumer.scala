@@ -28,7 +28,9 @@ import kafka.serializer._
 import kafka.utils._
 import kafka.metrics.KafkaMetricsReporter
 import kafka.consumer.{Blacklist,Whitelist,ConsumerConfig,Consumer}
-
+import scala.util.parsing.json._
+import scala.collection.immutable.Map
+import sys.process._
 /**
  * Consumer that dumps messages out to standard out.
  *
@@ -236,6 +238,28 @@ class DefaultMessageFormatter extends MessageFormatter {
       output.write(if (key == null) "null".getBytes() else key)
       output.write(keySeparator)
     }
+
+    //
+    // add commit method here
+
+    val str = new String(value)
+    println(str)
+    val jasonline = JSON.parseFull(str)
+    println(jasonline)
+    val content = jasonline.get.asInstanceOf[Map[String, String]]
+    println(content)
+    //println("#####username is " + content("username"))
+    // then call the API here
+    // println(content("name"))
+    //var cmd = "echo " + content("username") + " " + " > /Users/jialianggu/courses/cs286/286Project/kafka/sandbox/contents" 
+    Seq("bash", "-c", "echo `date` > test.txt")!!
+    //"echo data".!
+    val s:String = "echo data"
+    s.!
+    //Runtime.getRuntime().exec(cmd)
+    // end of my changes
+    
+    //
     output.write(if (value == null) "null".getBytes() else value)
     output.write(lineSeparator)
   }

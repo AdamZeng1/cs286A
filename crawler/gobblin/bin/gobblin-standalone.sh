@@ -126,7 +126,7 @@ start() {
   CLASSPATH="$GOBBLIN_JARS:$FWDIR_CONF"
 
   echo "Starting Gobblin standalone daemon"
-  COMMAND="$JAVA_HOME/bin/java -Xmx2g -Xms1g "
+  COMMAND="$JAVA_HOME/bin/java -Xmx256m -Xms256m "
   COMMAND+="-XX:+UseConcMarkSweepGC -XX:+UseParNewGC "
   COMMAND+="-XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintTenuringDistribution "
   COMMAND+="-XX:+UseCompressedOops "

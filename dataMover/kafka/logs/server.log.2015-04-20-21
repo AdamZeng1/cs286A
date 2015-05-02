@@ -1,0 +1,7 @@
+[2015-04-20 22:37:13,498] INFO 0 successfully elected as leader (kafka.server.ZookeeperLeaderElector)
+[2015-04-20 22:37:13,529] INFO re-registering broker info in ZK for broker 0 (kafka.server.KafkaHealthcheck)
+[2015-04-20 22:37:16,708] INFO conflict in /brokers/ids/0 data: {"jmx_port":-1,"timestamp":"1429594636692","host":"localhost","version":1,"port":9092} stored data: {"jmx_port":-1,"timestamp":"1429585649756","host":"airbears2-10-142-34-163.airbears2.1918.berkeley.edu","version":1,"port":9092} (kafka.utils.ZkUtils$)
+[2015-04-20 22:37:16,785] INFO New leader is 0 (kafka.server.ZookeeperLeaderElector$LeaderChangeListener)
+[2015-04-20 22:59:24,295] INFO re-registering broker info in ZK for broker 0 (kafka.server.KafkaHealthcheck)
+[2015-04-20 22:59:25,413] INFO conflict in /brokers/ids/0 data: {"jmx_port":-1,"timestamp":"1429595965411","host":"10.0.0.12","version":1,"port":9092} stored data: {"jmx_port":-1,"timestamp":"1429595962355","host":"localhost","version":1,"port":9092} (kafka.utils.ZkUtils$)
+[2015-04-20 22:59:25,424] INFO New leader is 0 (kafka.server.ZookeeperLeaderElector$LeaderChangeListener)

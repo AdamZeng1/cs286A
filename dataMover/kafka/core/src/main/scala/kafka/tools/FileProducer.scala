@@ -60,7 +60,7 @@ object FileProducer {
         var message: KeyedMessage[Array[Byte], Array[Byte]] = null
         do {
           message = reader.readMessage()
-          if(message != null)
+	  if(message != null)
             producer.send(message.topic, message.key, message.message)
         } while(message != null)
     } catch {

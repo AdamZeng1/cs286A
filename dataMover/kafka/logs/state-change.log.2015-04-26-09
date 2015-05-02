@@ -1,0 +1,4 @@
+[2015-04-26 09:25:10,206] TRACE Controller 0 epoch 5 changed state of replica 0 for partition [test,0] from OnlineReplica to OnlineReplica (state.change.logger)
+[2015-04-26 09:25:10,207] TRACE Controller 0 epoch 5 sending become-leader LeaderAndIsr request (Leader:0,ISR:0,LeaderEpoch:0,ControllerEpoch:2) with correlationId 9 to broker 0 for partition [test,0] (state.change.logger)
+[2015-04-26 09:25:10,207] TRACE Controller 0 epoch 5 sending UpdateMetadata request (Leader:0,ISR:0,LeaderEpoch:0,ControllerEpoch:2) with correlationId 9 to broker 0 for partition [test,0] (state.change.logger)
+[2015-04-26 09:25:10,209] TRACE Controller 0 epoch 5 sending UpdateMetadata request (Leader:0,ISR:0,LeaderEpoch:0,ControllerEpoch:2) with correlationId 12 to broker 0 for partition [test,0] (state.change.logger)

@@ -16,7 +16,7 @@ dir_path=${3}
 output_dir=$(echo $3 | sed 's/\(.*\/\)\(.*_append$\)/\2/')
 
 # if dir_path contains /job-output/, then process
-if [[ $dir_path == *"job-output/gobblin/example/simplejson/ExampleTable"* && $dir_path != *".avro" ]]
+if [[ $dir_path == *"job-output/gobblin/example/simplejson/ExampleTable"* && $dir_path != *".avro" && $dir_path != *".avro.crc" ]]
 then
 
   expected_file=gobblin/gobblin-dist/test_temp/numFiles.txt
@@ -29,7 +29,8 @@ then
     echo "creating tar archive for ${dir_path}"
     tar -czf "${1}/../output-tarballs/${output_dir}.tar.gz" -C ${dir_path} .
     echo "transferring to ${2}"
-    #scp ${1}.tar.gz ${2}
+    echo "${1}/../output-tarballs/${output_dir}.tar.gz"
+    scp -i ec2.pem "${1}/../output-tarballs/${output_dir}.tar.gz" ${2}
   fi
 fi
 # else ignore

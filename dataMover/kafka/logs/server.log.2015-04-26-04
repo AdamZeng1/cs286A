@@ -1,0 +1,11 @@
+[2015-04-26 04:27:10,085] ERROR Uncaught exception in thread 'kafka-network-thread-9092-0': (kafka.utils.Utils$)
+java.util.NoSuchElementException: None.get
+	at scala.None$.get(Option.scala:313)
+	at scala.None$.get(Option.scala:311)
+	at kafka.network.ConnectionQuotas.dec(SocketServer.scala:524)
+	at kafka.network.AbstractServerThread.close(SocketServer.scala:165)
+	at kafka.network.AbstractServerThread.close(SocketServer.scala:157)
+	at kafka.network.Processor.close(SocketServer.scala:374)
+	at kafka.network.Processor.processNewResponses(SocketServer.scala:406)
+	at kafka.network.Processor.run(SocketServer.scala:318)
+	at java.lang.Thread.run(Thread.java:744)
