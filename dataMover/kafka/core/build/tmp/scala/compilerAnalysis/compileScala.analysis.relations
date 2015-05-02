@@ -2467,7 +2467,6 @@ products:
    core/src/main/scala/kafka/tools/JmxTool.scala -> core/build/classes/main/kafka/tools/JmxTool$$anonfun$queryAttributes$1.class
    core/src/main/scala/kafka/tools/JmxTool.scala -> core/build/classes/main/kafka/tools/JmxTool$.class
    core/src/main/scala/kafka/tools/JmxTool.scala -> core/build/classes/main/kafka/tools/JmxTool.class
-   core/src/main/scala/kafka/tools/MetadataRepo.java -> core/build/classes/main/kafka/tools/MetadataRepo.class
    core/src/main/scala/kafka/tools/MirrorMaker.scala -> core/build/classes/main/kafka/tools/MirrorMaker$$anon$1.class
    core/src/main/scala/kafka/tools/MirrorMaker.scala -> core/build/classes/main/kafka/tools/MirrorMaker$$anon$2.class
    core/src/main/scala/kafka/tools/MirrorMaker.scala -> core/build/classes/main/kafka/tools/MirrorMaker$$anonfun$cleanShutdown$1.class
@@ -3464,8 +3463,6 @@ binary dependencies:
    core/src/main/scala/kafka/tools/JmxTool.scala -> /Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/rt.jar
    core/src/main/scala/kafka/tools/JmxTool.scala -> /Users/jialianggu/.gradle/caches/modules-2/files-2.1/net.sf.jopt-simple/jopt-simple/3.2/d625f12ba08083c8c16dcedd5396ec730e9e77ab/jopt-simple-3.2.jar
    core/src/main/scala/kafka/tools/JmxTool.scala -> /Users/jialianggu/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.10.4/9aae4cb1802537d604e03688cab744ff47b31a7d/scala-library-2.10.4.jar
-   core/src/main/scala/kafka/tools/MetadataRepo.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/rt.jar
-   core/src/main/scala/kafka/tools/MetadataRepo.java -> /Users/jialianggu/.gradle/caches/modules-2/files-2.1/org.mongodb/mongo-java-driver/3.0.0/734a5acccbd07a545c22244159e373aba9e963f6/mongo-java-driver-3.0.0.jar
    core/src/main/scala/kafka/tools/MirrorMaker.scala -> /Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/rt.jar
    core/src/main/scala/kafka/tools/MirrorMaker.scala -> /Users/jialianggu/.gradle/caches/modules-2/files-2.1/com.yammer.metrics/metrics-core/2.2.0/f82c035cfa786d3cbec362c38c22a5f5b1bc8724/metrics-core-2.2.0.jar
    core/src/main/scala/kafka/tools/MirrorMaker.scala -> /Users/jialianggu/.gradle/caches/modules-2/files-2.1/net.sf.jopt-simple/jopt-simple/3.2/d625f12ba08083c8c16dcedd5396ec730e9e77ab/jopt-simple-3.2.jar
@@ -7645,7 +7642,6 @@ class names:
    core/src/main/scala/kafka/tools/JmxTool.scala -> kafka.tools.JmxTool$$anonfun$queryAttributes$1
    core/src/main/scala/kafka/tools/JmxTool.scala -> kafka.tools.JmxTool$$anonfun$queryAttributes$1$$anonfun$apply$3
    core/src/main/scala/kafka/tools/JmxTool.scala -> kafka.tools.JmxTool$$anonfun$queryAttributes$1$$anonfun$apply$4
-   core/src/main/scala/kafka/tools/MetadataRepo.java -> kafka.tools.MetadataRepo
    core/src/main/scala/kafka/tools/MirrorMaker.scala -> kafka.tools.MirrorMaker
    core/src/main/scala/kafka/tools/MirrorMaker.scala -> kafka.tools.MirrorMaker$
    core/src/main/scala/kafka/tools/MirrorMaker.scala -> kafka.tools.MirrorMaker$$anon$1

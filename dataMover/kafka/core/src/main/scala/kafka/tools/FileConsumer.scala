@@ -186,12 +186,13 @@ object FileConsumer extends Logging {
         println(str)
         val jasonline = JSON.parseFull(str)
         println(jasonline)
-        val content = jasonline.get.asInstanceOf[Map[String, String]]
+        val content = jasonline.get.asInstanceOf[Map[String, Any]]
         println(content)
         val namespace = content("namespace")
         val  timestamp = content("timestamp")
         val filename = content("filename")  
-        repo.commit(namespace, filename, str, timestamp.asInstanceOf[Long])
+        repo.commit(namespace.asInstanceOf[String], filename.asInstanceOf[String], str.asInstanceOf[String], timestamp.asInstanceOf[Int].toLong)
+	repo.dump()
 	formatter.writeTo(messageAndTopic.key, messageAndTopic.message, OUTPUTFILE)
           numMessages += 1
         } catch {
