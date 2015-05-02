@@ -210,12 +210,12 @@ public class MetadataRepo
         } else {
             if (temp[1].equals("*")) {
                 query = new BasicDBObject("metadata", new BasicDBObject("$elemMatch",
-                            new BasicDBObject(TIMESTAMP, new BasicDBObject("$gt", new Date(startTime))
-                                    .append("$lte", new Date(endTime))).append(temp[0], new BasicDBObject("$exists", true))));
+                            new BasicDBObject(TIMESTAMP, new BasicDBObject("$lte", new Date(endTime)))
+                                    .append(temp[0], new BasicDBObject("$exists", true))));
             } else {
                 query = new BasicDBObject("metadata", new BasicDBObject("$elemMatch",
-                            new BasicDBObject(TIMESTAMP, new BasicDBObject("$gt", new Date(startTime))
-                                    .append("$lte", new Date(endTime))).append(temp[0], temp[1])));
+                            new BasicDBObject(TIMESTAMP, new BasicDBObject("$lte", new Date(endTime)))
+                                    .append(temp[0], temp[1])));
             }
             FindIterable<Document> cursor = collection.find(query);
             k = cursor.iterator();
@@ -229,25 +229,28 @@ public class MetadataRepo
             Document d = (Document) k.next();
             ArrayList<Document> metadataList = (ArrayList<Document>) d.get("metadata");
             fileName = (String) d.get("file");
-            boolean firstT = false;
+            long maxxTime = 0;
+            int maxxInt = 0;
             for (int i = 0; i < metadataList.size(); i++) {
-                if (metadataList.get(i).get(temp[0]) != null) {
-                    if (temp[1].equals("*") || metadataList.get(i).get(temp[0]).equals(temp[1])
-                            || (metadataList.get(i).get(temp[0]).getClass() == ArrayList.class
-                                && ((ArrayList <String>) metadataList.get(i).get(temp[0])).contains(temp[1])) ) {
-                        compTime =  ((Date) metadataList.get(i).get(TIMESTAMP)).getTime();
-                        if ( checkTime && (compTime <= endTime && compTime > startTime) || !checkTime) {
-                            if (!firstT) {
-                                firstT = true;
-                                System.out.println("In file " + fileName + ":");
-                            }
-                            System.out.println(metadataList.get(i).toJson());
-                            count++;
-                        }
-                    }
+                compTime =  ((Date) metadataList.get(i).get(TIMESTAMP)).getTime();
+                if ( ( checkTime && (compTime <= endTime && compTime > maxxTime) ) ||
+                        ( !checkTime && ( compTime > maxxTime ) )) {
+                    maxxInt = i;
+                    maxxTime = compTime;
+                }
+            }
+            if (metadataList.get(maxxInt).get(temp[0]) != null) {
+                if (temp[1].equals("*") || metadataList.get(maxxInt).get(temp[0]).equals(temp[1])
+                    || (metadataList.get(maxxInt).get(temp[0]).getClass() == ArrayList.class
+                        && ((ArrayList<String>) metadataList.get(maxxInt).get(temp[0])).contains(temp[1]))) {
+                    System.out.println("In file " + fileName + ":");
+                    System.out.println(metadataList.get(maxxInt).toJson());
+                    count++;
                 }
             }
         }
+
+
         System.out.println(count + " records found.");
         System.out.println("=======================================================================");
     }
