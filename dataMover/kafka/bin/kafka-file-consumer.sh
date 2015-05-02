@@ -15,7 +15,7 @@
 # limitations under the License.
 
 if [ "x$KAFKA_HEAP_OPTS" = "x" ]; then
-    export KAFKA_HEAP_OPTS="-Xmx512M"
+    export KAFKA_HEAP_OPTS="-Xmx256M"
 fi
 
 exec $(dirname $0)/kafka-run-class.sh kafka.tools.FileConsumer $@
