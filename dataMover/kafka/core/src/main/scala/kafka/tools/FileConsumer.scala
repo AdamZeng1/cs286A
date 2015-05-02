@@ -191,7 +191,7 @@ object FileConsumer extends Logging {
         val namespace = content("namespace")
         val  timestamp = content("timestamp")
         val filename = content("filename")  
-        repo.commit(namespace.asInstanceOf[String], filename.asInstanceOf[String], str.asInstanceOf[String], timestamp.asInstanceOf[Int].toLong)
+        repo.commit(namespace.asInstanceOf[String], filename.asInstanceOf[String], str.asInstanceOf[String], timestamp.asInstanceOf[String].toLong)
 	repo.dump()
 	formatter.writeTo(messageAndTopic.key, messageAndTopic.message, OUTPUTFILE)
           numMessages += 1

@@ -3449,6 +3449,7 @@ binary dependencies:
    core/src/main/scala/kafka/tools/FileConsumer.scala -> /Users/jialianggu/.gradle/caches/modules-2/files-2.1/com.101tec/zkclient/0.3/dedcf2b53fb742adba7080ac3aed781694ba616e/zkclient-0.3.jar
    core/src/main/scala/kafka/tools/FileConsumer.scala -> /Users/jialianggu/.gradle/caches/modules-2/files-2.1/net.sf.jopt-simple/jopt-simple/3.2/d625f12ba08083c8c16dcedd5396ec730e9e77ab/jopt-simple-3.2.jar
    core/src/main/scala/kafka/tools/FileConsumer.scala -> /Users/jialianggu/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.10.4/9aae4cb1802537d604e03688cab744ff47b31a7d/scala-library-2.10.4.jar
+   core/src/main/scala/kafka/tools/FileConsumer.scala -> core/build/classes/main/kafka/tools/MetadataRepo.class
    core/src/main/scala/kafka/tools/FileProducer.scala -> /Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/rt.jar
    core/src/main/scala/kafka/tools/FileProducer.scala -> /Users/jialianggu/.gradle/caches/modules-2/files-2.1/net.sf.jopt-simple/jopt-simple/3.2/d625f12ba08083c8c16dcedd5396ec730e9e77ab/jopt-simple-3.2.jar
    core/src/main/scala/kafka/tools/FileProducer.scala -> /Users/jialianggu/.gradle/caches/modules-2/files-2.1/org.scala-lang/scala-library/2.10.4/9aae4cb1802537d604e03688cab744ff47b31a7d/scala-library-2.10.4.jar
@@ -4974,7 +4975,6 @@ source dependencies:
    core/src/main/scala/kafka/tools/FileConsumer.scala -> core/src/main/scala/kafka/metrics/KafkaMetricsReporter.scala
    core/src/main/scala/kafka/tools/FileConsumer.scala -> core/src/main/scala/kafka/serializer/Decoder.scala
    core/src/main/scala/kafka/tools/FileConsumer.scala -> core/src/main/scala/kafka/tools/ConsoleConsumer.scala
-   core/src/main/scala/kafka/tools/FileConsumer.scala -> core/src/main/scala/kafka/tools/MetadataRepo.java
    core/src/main/scala/kafka/tools/FileConsumer.scala -> core/src/main/scala/kafka/utils/CommandLineUtils.scala
    core/src/main/scala/kafka/tools/FileConsumer.scala -> core/src/main/scala/kafka/utils/Logging.scala
    core/src/main/scala/kafka/tools/FileConsumer.scala -> core/src/main/scala/kafka/utils/Utils.scala
