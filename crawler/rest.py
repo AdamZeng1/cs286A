@@ -9,7 +9,10 @@ urls = (
     '/parse/(.*)', 'parse'
 )
 
-app = web.application(urls, globals())
+class MyApplication(web.application):
+    def run(self, port=8080, *middleware):
+        func = self.wsgifunc(*middleware)
+        return web.httpserver.runsimple(func, ('localhost', port))
 
 class parse:
     def GET(self, usr_input):
@@ -38,4 +41,5 @@ class parse:
         return json.dumps(json_data)
 
 if __name__ == "__main__":
+    app = MyApplication(urls, globals())
     app.run()
