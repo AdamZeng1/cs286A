@@ -110,7 +110,7 @@ public class SimpleJsonSource implements Source<String, String> {
             System.out.println("CSVCSVCSV");
             csvCount+=1;
             //Include basePath, filename, location you want to store file
-            String myUrl = "http://0.0.0.0:8080/parse/" + basePath + "&" + url_file_name + "&" + tempFileDirAbsolute;
+            String myUrl = "http://10.2.2.2:8080/parse" + basePath + "&" + url_file_name + "&" + tempFileDirAbsolute;
             System.out.println("------------------------------");
             System.out.println(myUrl);
             try {
