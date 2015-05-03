@@ -221,42 +221,40 @@ public class MetadataRepo
         Document fdoc = new Document("file", file);
         FindIterable<Document> found = collection.find(fdoc);     // Returns "a CURSOR to the documents that match the query criteria"
 
-        if (found.iterator().hasNext()) {
-            System.out.println(found.iterator().next());
-        }
-
 
         // Note: also consider using collection.findOne, which will return "only the first result
         //   from the result set, and not a MongoCursor that can be iterated over"
 
-//        if (found.iterator().hasNext()) {
+        if (found.iterator().hasNext()) {
             // Comment from Enrico:
             //  "You can query mongodb to return only one set of metadata,
             //   like for example, only the most recent metadata.
             //   Right now, you make mongodb return ALL metadata,
             //   and then you are taking the last one only, which is not efficient."
 
+            // System.out.println(found.iterator().next());
+
             // If a document is found, it should be the only one
-//            Document doc = found.iterator().next();
+            Document doc = found.iterator().next();
 
 
-//            ArrayList<Document> metadataList  = (ArrayList<Document>) doc.get("metadata");
+            ArrayList<Document> metadataList  = (ArrayList<Document>) doc.get("metadata");
             /*
             // This section of code would show ALL metadata commits ever
             System.out.println("Metadata for " + file + ":");
             for (Document d : metadataList)
                 System.out.println(d.toJson());
             */
-//            System.out.println("Most recent metadata for " + file + ":");
+            System.out.println("Most recent metadata for " + file + ":");
 
             // Get size of metadata array (last element should be the most up-to-date entry)
-//            int currMetadataIndex = metadataList.size() - 1;
+            int currMetadataIndex = metadataList.size() - 1;
 
-//            System.out.println(metadataList.get(currMetadataIndex).toJson());
-//        }
-//        else {
-//            System.out.println("No file with the name: " + file + ".");
-//        }
+            System.out.println(metadataList.get(currMetadataIndex).toJson());
+        }
+        else {
+            System.out.println("No file with the name: " + file + ".");
+       }
 
         System.out.println("=======================================================================");
     }
