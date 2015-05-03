@@ -42,6 +42,7 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
+import java.net.*;
 /**
  * An implementation of {@link Source} for the simple JSON example.
  *
@@ -74,32 +75,67 @@ public class SimpleJsonSource implements Source<String, String> {
     tempFileDir.mkdir();
     String tempFileDirAbsolute = "";
     try{
-    	tempFileDirAbsolute = tempFileDir.getCanonicalPath(); // Retrieve absolute path of temp folder
+      tempFileDirAbsolute = tempFileDir.getCanonicalPath(); // Retrieve absolute path of temp folder
     } catch(IOException e){
         e.printStackTrace();
     }
 
     int nameCount = 0;
+    int csvCount = 0;
     for (String file : Splitter.on(',').omitEmptyStrings().split(filesToPull)) {
       Iterator it = FileUtils.iterateFiles(new File(file), null, true);
       while(it.hasNext()) {
         try{
           File newFile = (File) it.next();
-	  String basePath = newFile.getCanonicalPath(); // Retrieve absolute path of source
+          String basePath = newFile.getCanonicalPath(); // Retrieve absolute path of source
           Path path = newFile.toPath();
 
+          //call to rest api:, provide with file basePath
+          String extension = "";
+          System.out.println("basePath is" + basePath);
+          int i = basePath.lastIndexOf('.');
+          System.out.println("i");
+          if (i > 0) {
+              extension = basePath.substring(i+1);
+          }
+
+          String url_file_name = "";
+          int j = basePath.lastIndexOf('/');
+          if (j > 0) {
+            url_file_name = basePath.substring(j+1);
+          }
+
+          //hand off to rest api
+          if (extension.equals("csv")) {
+            System.out.println("CSVCSVCSV");
+            csvCount+=1;
+            //Include basePath, filename, location you want to store file
+            String myUrl = "http://0.0.0.0:8080/parse/" + basePath + "&" + url_file_name + "&" + tempFileDirAbsolute;
+            System.out.println("------------------------------");
+            System.out.println(myUrl);
+            try {
+              URL url = new URL(myUrl);
+              HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+              connection.setRequestMethod("GET");
+              connection.connect();
+            } catch (Exception e) {
+              e.printStackTrace();
+            }
+          
+
+          } 
           // Print filename and associated metadata 
           System.out.println(basePath);
           BasicFileAttributes attr = Files.readAttributes(path, BasicFileAttributes.class);
-          System.out.println("  creationTime: " + attr.creationTime());
-          System.out.println("  lastAccessTime: " + attr.lastAccessTime());
-          System.out.println("  lastModifiedTime: " + attr.lastModifiedTime());
-          System.out.println("  isDirectory: " + attr.isDirectory());
-          System.out.println("  isOther: " + attr.isOther());
-          System.out.println("  isRegularFile: " + attr.isRegularFile());
-          System.out.println("  isSymbolicLink: " + attr.isSymbolicLink());
-          System.out.println("  size: " + attr.size()); 
-          System.out.println(" ");
+          // System.out.println("  creationTime: " + attr.creationTime());
+          // System.out.println("  lastAccessTime: " + attr.lastAccessTime());
+          // System.out.println("  lastModifiedTime: " + attr.lastModifiedTime());
+          // System.out.println("  isDirectory: " + attr.isDirectory());
+          // System.out.println("  isOther: " + attr.isOther());
+          // System.out.println("  isRegularFile: " + attr.isRegularFile());
+          // System.out.println("  isSymbolicLink: " + attr.isSymbolicLink());
+          // System.out.println("  size: " + attr.size()); 
+          // System.out.println(" ");
 
           //creating intermediate JSON
           JSONObject intermediate = new JSONObject();
@@ -116,7 +152,7 @@ public class SimpleJsonSource implements Source<String, String> {
           intermediate.put("isSymbolicLink", String.valueOf(attr.isSymbolicLink()));
           intermediate.put("size", String.valueOf(attr.size()));
 
-	  // Create intermediate temp file
+    // Create intermediate temp file
           nameCount += 1;
           String intermediateName = "/generated" + String.valueOf(nameCount) + ".json";
           String finalName = tempFileDirAbsolute + intermediateName;
@@ -136,6 +172,11 @@ public class SimpleJsonSource implements Source<String, String> {
 
       // write out number of files found to temp file
       try {
+        FileWriter numCsvFiles = new FileWriter(tempFileDirAbsolute + "/numCsvFiles.txt");
+        numCsvFiles.write("" + csvCount);
+        numCsvFiles.flush();
+        numCsvFiles.close();
+
         FileWriter numFiles = new FileWriter(tempFileDirAbsolute + "/numFiles.txt");
         numFiles.write("" + nameCount);
         numFiles.flush();
