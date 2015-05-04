@@ -27,9 +27,32 @@ class parse:
 
         os.system("scp /"+usr_input + " " + this_file_dir)
         json_data = {}
-        with open(file_name) as csvfile:
-            row_count = sum(1 for row in csvfile)
-            json_data['row_count'] = row_count
+        # with open(file_name) as csvfile:
+        #     row_count = sum(1 for row in csvfile)
+        #     json_data['row_count'] = row_count
+
+
+        delimiter = ','
+        quote_character = '"'
+
+        csv_fp = open(file_name, 'rb')
+        csv_reader = csv.reader(csv_fp, delimiter=delimiter)
+
+        current_row = 0
+        header = ""
+        for row in csv_reader:
+            current_row += 1
+
+            if current_row == 1: # Skip heading row
+                header = row
+
+        json_data['row_count'] = current_row
+        json_data['header'] = header
+
+
+
+
+
 
         file_args = file_name.split('.')
         name_wo_extension = file_args[0]
@@ -37,7 +60,7 @@ class parse:
         with open(name_as_json, 'w') as outfile:
             json.dump(json_data, outfile)
         os.system("scp " + name_as_json + " " + this_file_dir + "/crawler/gobblin/test_source/")
-        return "scp " + name_as_json + " " + this_file_dir + "/crawler/gobblin/test_source/"
+        return json.dumps(json_data)
 
 
 if __name__ == "__main__":
