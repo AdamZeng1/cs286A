@@ -6,7 +6,7 @@ import csv
 import json
 
 urls = (
-    '/parse/(.*)', 'parse'
+    '/(.*)', 'parse'
 )
 
 class MyApplication(web.application):
@@ -21,12 +21,11 @@ class parse:
 
         this_file_dir = os.path.dirname(full_path)
 
-        args = usr_input.split('&')
-        path = args[0]
-        file_name = args[1]
-        transfer_location = args[2]
+        args = usr_input.split('/')
+        file_name = args[len(args)-1]
 
-        os.system("scp ~/" +path + " " + this_file_dir)
+
+        os.system("scp /"+usr_input + " " + this_file_dir)
         json_data = {}
         with open(file_name) as csvfile:
             row_count = sum(1 for row in csvfile)
@@ -37,8 +36,9 @@ class parse:
         name_as_json = name_wo_extension + '.json'
         with open(name_as_json, 'w') as outfile:
             json.dump(json_data, outfile)
-        os.system("scp " + name_as_json + " " + transfer_location)
-        return json.dumps(json_data)
+        os.system("scp " + name_as_json + " " + this_file_dir + "/crawler/gobblin/test_source/")
+        return "scp " + name_as_json + " " + this_file_dir + "/crawler/gobblin/test_source/"
+
 
 if __name__ == "__main__":
     app = MyApplication(urls, globals())
