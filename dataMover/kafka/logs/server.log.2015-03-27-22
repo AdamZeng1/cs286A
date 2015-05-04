@@ -1,2 +1,0 @@
-[2015-03-27 22:37:09,092] INFO 0 successfully elected as leader (kafka.server.ZookeeperLeaderElector)
-[2015-03-27 22:37:09,138] INFO re-registering broker info in ZK for broker 0 (kafka.server.KafkaHealthcheck)

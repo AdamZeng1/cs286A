@@ -1,3 +1,0 @@
-[2015-04-14 17:27:04,608] INFO [Kafka Server 0], shutting down (kafka.server.KafkaServer)
-[2015-04-14 17:27:04,613] INFO [Kafka Server 0], Starting controlled shutdown (kafka.server.KafkaServer)
-[2015-04-14 17:27:20,475] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
