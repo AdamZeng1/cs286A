@@ -1,3 +1,0 @@
-[2015-04-15 09:59:23,749] INFO [Kafka Server 0], Controlled shutdown succeeded (kafka.server.KafkaServer)
-[2015-04-15 09:59:23,750] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-04-15 09:59:23,753] INFO [Socket Server on Broker 0], Shutting down (kafka.network.SocketServer)

@@ -1,3 +1,0 @@
-[2015-03-31 21:08:24,586] TRACE [Controller 0]: checking need to trigger partition rebalance (kafka.controller.KafkaController)
-[2015-03-31 21:08:24,970] INFO [SessionExpirationListener on 0], ZK expired; shut down all controller components and try to re-elect (kafka.controller.KafkaController$SessionExpirationListener)
-[2015-03-31 21:08:25,258] DEBUG [Controller 0]: preferred replicas by broker Map(0 -> Map([test,0] -> List(0))) (kafka.controller.KafkaController)

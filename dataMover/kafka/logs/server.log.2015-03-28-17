@@ -1,7 +1,0 @@
-[2015-03-28 17:28:44,040] INFO 0 successfully elected as leader (kafka.server.ZookeeperLeaderElector)
-[2015-03-28 17:28:44,085] INFO re-registering broker info in ZK for broker 0 (kafka.server.KafkaHealthcheck)
-[2015-03-28 17:28:45,237] INFO Registered broker 0 at path /brokers/ids/0 with address localhost:9092. (kafka.utils.ZkUtils$)
-[2015-03-28 17:28:45,237] INFO done re-registering broker (kafka.server.KafkaHealthcheck)
-[2015-03-28 17:28:45,237] INFO Subscribing to /brokers/topics path to watch for new topics (kafka.server.KafkaHealthcheck)
-[2015-03-28 17:28:45,258] INFO [ReplicaFetcherManager on broker 0] Removed fetcher for partitions [test,0] (kafka.server.ReplicaFetcherManager)
-[2015-03-28 17:28:45,267] INFO New leader is 0 (kafka.server.ZookeeperLeaderElector$LeaderChangeListener)

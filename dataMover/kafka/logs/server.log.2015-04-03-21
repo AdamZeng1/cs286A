@@ -1,2 +1,0 @@
-[2015-04-03 21:28:51,375] INFO [Kafka Server 0], shutting down (kafka.server.KafkaServer)
-[2015-04-03 21:28:51,380] INFO [Kafka Server 0], Starting controlled shutdown (kafka.server.KafkaServer)
