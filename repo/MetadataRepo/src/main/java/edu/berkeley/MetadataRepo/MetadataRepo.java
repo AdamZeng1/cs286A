@@ -3,16 +3,15 @@ package edu.berkeley.MetadataRepo;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCursor;
 import com.mongodb.MongoClient;
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
-import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.*;
 import org.bson.Document;
 
+import javax.print.Doc;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * A class that connects to a MongoDB database and handles all interactions with the database
@@ -20,18 +19,27 @@ import java.util.Date;
 public class MetadataRepo
 {
     private static final String TIMESTAMP = "__timestamp__";
+    private static final long MILLISECOND_IN_A_DAY = 86400000;
 
     private MongoClient mongoClient;
     private MongoDatabase database;
 
-    // Constructor
+    /**
+     * Creates a connection to the metadata repository
+     *
+     * @param address the IP address of the metadata repository
+     */
     public MetadataRepo(String address)
     {
         mongoClient = new MongoClient(address);
         database = mongoClient.getDatabase("MetadataRepo");
     }
 
-    // Function that parses the user command and executes it accordingly
+    /**
+     * Function that parses the user command and executes it accordingly
+     *
+     * @param command the command to be executed
+     */
     public void execute(String command)
     {
         // No command entered
@@ -46,12 +54,22 @@ public class MetadataRepo
             // User can enter metadata into the database
             if (act.equals("commit"))
             {
-                /* Parameters for 'commit':
-                *   cmd[1]: String namespace
-                *   cmd[2]: String file
-                *   cmd[3]: String jsonMetadata
-                *   cmd[4]: long timestamp */
-                commit(cmds[1], cmds[2], cmds[3], Long.parseLong(cmds[4]));
+                // Determine whether the user entered a timestamp or not
+                Long timestamp = null;
+                try {timestamp = Long.parseLong(cmds[3]);}
+                catch (NumberFormatException e) {timestamp = null;}
+                int i = timestamp == null? 3 : 4;
+
+                // Ignore spaces for the metadata argument
+                StringBuilder metadata = new StringBuilder();
+                for (; i < cmds.length; i++)
+                    metadata.append(cmds[i]);
+
+                // Execute commit
+                if (timestamp == null)
+                    commit(cmds[1], cmds[2], metadata.toString());
+                else
+                    commit(cmds[1], cmds[2], metadata.toString(), timestamp);
             }
             // User can view all metadata in the database
             else if (act.equals("dump"))
@@ -61,31 +79,32 @@ public class MetadataRepo
             // User can view a particular file from the database
             else if (act.equals("show"))
             {
-                /* Parameters for 'show':
-                *   cmd[1]: String namespace
-                *   cmd[2]: String file */
-                show(cmds[1], cmds[2]);
-                // NOTE: Should also implement time in 'show', similar to 'find' (see below)
-                //   --> allow the user to query for legacy metadata (metadata other than the most recent)
+                // Parameters for 'show':
+                // cmd[1]: String namespace
+                // cmd[2]: String file
+                if (cmds.length == 4)
+                   show(cmds[1], cmds[2], cmds[3]);
+                else
+                    show(cmds[1], cmds[2]);
+
             }
             // User can view all files with a particular key-value pair from the database
             else if (act.equals("find"))
             {
-                /* Parameters for 'find':
-                *   cmd[1]: String namespace
-                *   cmd[2]: String keyword  (format: "key"="value")
-                *   cmd[3]: String time
-                *           (optional: searches the time range from beginning of history to time specified) */
+                // Parameters for 'find':
+                // cmd[1]: String namespace
+                // cmd[2]: String keyword  (format: "key"="value")
+                // cmd[3]: String time
                 if (cmds.length == 4)
                     find(cmds[1], cmds[2], cmds[3]);
                 else
-                    find(cmds[1], cmds[2], "None");
+                    find(cmds[1], cmds[2]);
             }
             // User can delete a namespace from the database
             else if (act.equals("clear"))
             {
-                /* Parameters for 'clear':
-                *   cmd[1]: String namespace */
+                // Parameters for 'clear':
+                // cmd[1]: String namespace
                 clear(cmds[1]);
             }
             // User does not input a valid command
@@ -103,7 +122,26 @@ public class MetadataRepo
         }
     }
 
-    // * This function allows the user to enter metadata into the database *
+    /**
+     * This function allows the user to enter metadata into the database
+     *
+     * @param namespace
+     * @param file
+     * @param jsonMetadata
+     */
+    public void commit(String namespace, String file, String jsonMetadata)
+    {
+        commit(namespace, file, jsonMetadata, System.currentTimeMillis());
+    }
+
+    /**
+     * This function allows the user to enter metadata into the database
+     *
+     * @param namespace
+     * @param file
+     * @param jsonMetadata
+     * @param timestamp
+     */
     public void commit(String namespace, String file, String jsonMetadata, long timestamp)
     {
         MongoCollection<Document> collection = database.getCollection(namespace);
@@ -142,12 +180,12 @@ public class MetadataRepo
         }
 
         // Print confirmation message
-        System.out.println("=======================================================================");
         System.out.println("Committed '" + file + "' to namespace '" + namespace + "'");
-        System.out.println("=======================================================================");
     }
 
-    // * This function allows the user to view all metadata in the database *
+    /**
+     * This function allows the user to view all metadata in the database
+     */
     public void dump()
     {
         // Loop through all namespaces
@@ -168,57 +206,88 @@ public class MetadataRepo
         }
     }
 
-    // * This function allows the user to view a particular file from the database *
+    /**
+     *
+     *
+     * @param namespace
+     * @param file
+     */
     public void show(String namespace, String file)
+    {
+        show(namespace, file, null);
+    }
+
+    /**
+     * This function allows the user to view a particular file from the database
+     *
+     * @param namespace
+     * @param file
+     * @param time
+     */
+    public void show(String namespace, String file, String time)
     {
         // Retrieve the collection of documents in the specified namespace
         MongoCollection<Document> collection = database.getCollection(namespace);
 
-        // Find a document with the given name
-        Document fdoc = new Document("file", file);
-        FindIterable<Document> found = collection.find(fdoc);
-        // NOTE: consider using 'collection.findOne' instead of 'collection.find'
-        //      The former will return "only the first result from the result set,
-        //      and not a MongoCursor that can be iterated over"
+        // A list to hold the pipeline steps for MongoDB's aggregate
+        List<BasicDBObject> pipeline = new ArrayList<BasicDBObject>();
 
-        System.out.println("=======================================================================");
-        System.out.println("Namespace: " + namespace);
-        System.out.println("-----------------------------------------------------------------------");
+        // First, unwind the metadata array. See MongoDB documentation to understand what unwind does.
+        pipeline.add(new BasicDBObject("$unwind", "$metadata"));
 
-        if (found.iterator().hasNext()) {
-            // If a document is found, it should be the only one
-            Document doc = found.iterator().next();
-            ArrayList<Document> metadataList  = (ArrayList<Document>) doc.get("metadata");
+        // Second, find the particular file that we're looking for, and it should not be more recent than the given timestamp
+        SimpleDateFormat sdf  = new SimpleDateFormat("MM/dd/yy");
+        Date date;
+        if (time == null)
+            date = new Date();
+        else
+            try {date = new Date(Long.parseLong(time)); } catch (NumberFormatException nfe) { try {date = new Date(sdf.parse(time).getTime() + MILLISECOND_IN_A_DAY);} catch (ParseException pe) {System.out.println("Error: Syntax error in timestamp"); return;}} // Try parsing timestamp in both MM/dd/yy format and long format
+        pipeline.add(new BasicDBObject("$match", new BasicDBObject("file", file).append("metadata." + TIMESTAMP, new BasicDBObject("$lte", date))));
 
-            // Get size of metadata array (last element should be the most recently committed entry)
-            int currMetadataIndex = metadataList.size() - 1;
+        // Third, sort by timestamp in descending order
+        pipeline.add(new BasicDBObject("$sort", new BasicDBObject("metadata." + TIMESTAMP, -1)));
 
-            // Get the date of the most recently committed entry
-            long longDate = ((Date) metadataList.get(currMetadataIndex).get(TIMESTAMP)).getTime();
-            SimpleDateFormat sdfDate = new SimpleDateFormat("dd-MMMM-yyyy, HH:mm:ss.SSS");
-            String strDate = sdfDate.format(longDate);
-            // Print the date
-            System.out.println("Most recent metadata for " + file + " (committed on " + strDate + "):");
-            // Print the most recent metadata
-            System.out.println(metadataList.get(currMetadataIndex).toJson());
+        // Finally, limit the output to 1, so it only displays the most recent metadata before the specified timestamp
+        pipeline.add(new BasicDBObject("$limit", 1));
 
-            /*
-            // NOTE: This section of code would show ALL metadata commits ever for the document
-            System.out.println("Metadata for " + file + ":");
-            for (Document d : metadataList)
-                System.out.println(d.toJson());
-            */
-        }
-        else {
-            // Print error message
-            System.out.println("No file with the name: " + file + ".");
+        // Execute the query
+        AggregateIterable<Document> results = collection.aggregate(pipeline);
+
+        boolean resultFound = false;
+        SimpleDateFormat outFormat = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
+
+        // Print the results
+        for (Document d : results) {
+            resultFound = true;
+            Document meta = (Document) d.get("metadata");
+            Date commitTime = (Date) meta.remove(TIMESTAMP);
+            System.out.println(String.format("(Committed on %s) %s -> %s", outFormat.format(commitTime), d.get("file").toString(), meta.toJson()));
         }
 
-        System.out.println("=======================================================================");
+        if (!resultFound)
+            System.out.println("Metadata not found");
     }
 
-    // * This function allows the user to view all files with a particular key-value pair from the database *
-    //      (Assumes the metadata is at most one degree nested)
+    /**
+     *
+     *
+     * @param namespace
+     * @param keyword
+     */
+    public void find(String namespace, String keyword)
+    {
+        find(namespace, keyword, "None");
+    }
+
+
+    /**
+     * This function allows the user to view all files with a particular key-value pair from the database
+     * (Assumes the metadata is at most one degree nested)
+     *
+     * @param namespace
+     * @param keyword
+     * @param time
+     */
     public void find(String namespace, String keyword, String time)
     {
         // Initialize variables for checking the date
@@ -299,10 +368,6 @@ public class MetadataRepo
             k = cursor.iterator();
         }
 
-        System.out.println("=======================================================================");
-        System.out.println("Namespace: " + namespace);
-        System.out.println("-----------------------------------------------------------------------");
-
         while (k.hasNext()) {
             // Get the name of the document file
             Document d = (Document) k.next();
@@ -329,7 +394,7 @@ public class MetadataRepo
                     || (metadataList.get(maxxInt).get(kv_pair[0]).getClass() == ArrayList.class
                         && ((ArrayList<String>) metadataList.get(maxxInt).get(kv_pair[0])).contains(kv_pair[1]))) {
                     // Find the name of the file at the index calculated in the loop above
-                    System.out.println("In file " + fileName + ":");
+                    System.out.print(fileName + ": ");
                     System.out.println(metadataList.get(maxxInt).toJson());
                     // Increment the count of files that contain the query on 'keyword'
                     fileCount++;
@@ -338,10 +403,14 @@ public class MetadataRepo
         }
 
         System.out.println(fileCount + " records found.");
-        System.out.println("=======================================================================");
     }
 
-    // * This function allows the user to delete a namespace from the database *
+
+    /**
+     * This function allows the user to delete a namespace from the database
+     *
+     * @param namespace
+     */
     public void clear(String namespace)
     {
         // Retrieve the collection of documents in the specified namespace
