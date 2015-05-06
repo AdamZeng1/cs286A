@@ -39,11 +39,18 @@ with open ("gobblin/gobblin-dist/test_temp/numFiles.txt", "r") as f:
 
 # Parse out the files, bail if not ready to be merged
 files = glob.glob(dr + "/*")
+print "FILES: " + str(files)
+print "Expected number: " + str(numCSVs + 1)
 if(len(files) != numCSVs + 1): sys.exit()
 
 avroDir = [f for f in files if os.path.isdir(f)][0]
 avros = glob.glob(avroDir + "/*")
 jsons = [f for f in files if ".json" in f]
+
+print "JSONS: " + str(jsons)
+print "Expected number: " + str(numCSVs)
+print "AVROS: " + str(avros)
+print "Expected number: " + str(numAvros)
 if(len(jsons) != numCSVs): sys.exit()
 if(len(avros) != numAvros): sys.exit()
 
