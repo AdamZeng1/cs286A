@@ -111,9 +111,10 @@ public class SimpleJsonSource implements Source<String, String> {
             csvCount+=1;
             System.out.println("CURL________________________________________");
             //Include basePath, filename, location you want to store file
-            System.out.println("curl http://localhost:8080" + basePath);
+            System.out.println("curl http://localhost:8080" + basePath + "/" + Integer.toString(nameCount));
             //10.0.2.2 is localhost from vagrant
-            Process p = Runtime.getRuntime().exec("curl http://localhost:8080" + basePath);
+            // Insert the nameCount so that it can be joined back later.
+            Process p = Runtime.getRuntime().exec("curl http://localhost:8080" + basePath + "/" + Integer.toString(nameCount));
             // String myUrl = "http://localhost:8080/parse" + basePath + "&" + url_file_name + "&" + tempFileDirAbsolute;
             // System.out.println("------------------------------");
             // System.out.println(myUrl);
