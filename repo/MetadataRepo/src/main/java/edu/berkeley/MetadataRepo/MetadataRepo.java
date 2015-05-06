@@ -4,6 +4,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBCursor;
 import com.mongodb.MongoClient;
 import com.mongodb.client.*;
+import com.mongodb.client.result.DeleteResult;
 import org.bson.Document;
 
 import javax.print.Doc;
@@ -73,7 +74,7 @@ public class MetadataRepo
                 if (timestamp == null)
                     commit(currentNamespace, cmds[1], metadata.toString());
                 else
-                    commit(currentNamespace, cmds[1], metadata.toString(), timestamp);
+                    commit(currentNamespace, cmds[1], metadata.toString(), timestamp - Parser.MILLISECOND_IN_A_DAY); // no need to add 1 day when committing
             }
             // User can view all metadata in the database
             else if (act.equals("dump"))
@@ -114,6 +115,11 @@ public class MetadataRepo
                 else
                     find(currentNamespace, query.toString(), timestamp);
             }
+            // Remove a file
+            else if (act.equals("rm"))
+            {
+                remove(currentNamespace, cmds[1]);
+            }
             // User can delete a namespace from the database
             else if (act.equals("clear"))
             {
@@ -121,6 +127,7 @@ public class MetadataRepo
                 // cmd[1]: String namespace
                 clear(cmds[1]);
             }
+            // Change the current namespace
             else if (act.equals("namespace"))
             {
                 currentNamespace = cmds[1];
@@ -163,7 +170,7 @@ public class MetadataRepo
      */
     public void commit(String namespace, String file, String jsonMetadata, long timestamp)
     {
-        if (currentNamespace == null) {
+        if (namespace == null) {
             System.out.println("Error: Please specify a namespace");
             return;
         }
@@ -250,7 +257,7 @@ public class MetadataRepo
      */
     public void show(String namespace, String file, String time)
     {
-        if (currentNamespace == null) {
+        if (namespace == null) {
             System.out.println("Error: Please specify a namespace");
             return;
         }
@@ -322,7 +329,7 @@ public class MetadataRepo
      */
     public void find(String namespace, String query, long time)
     {
-        if (currentNamespace == null) {
+        if (namespace == null) {
             System.out.println("Error: Please specify a namespace");
             return;
         }
@@ -376,6 +383,25 @@ public class MetadataRepo
         System.out.println(resultFound + " result" + (resultFound == 1 ? "" : "s") + " found");
     }
 
+    /**
+     *
+     * @param namespace
+     * @param file
+     */
+    public void remove(String namespace, String file)
+    {
+        if (namespace == null) {
+            System.out.println("Error: Please specify a namespace");
+            return;
+        }
+
+        MongoCollection<Document> collection = database.getCollection(namespace);
+        DeleteResult result = collection.deleteOne(new BasicDBObject("file", file));
+        if (result.getDeletedCount() == 1)
+            System.out.println(String.format("'%s' in '%s' has been deleted", file, namespace));
+        else
+            System.out.println(String.format("'%s' in '%s' not found", file, namespace));
+    }
 
     /**
      * This function allows the user to delete a namespace from the database
