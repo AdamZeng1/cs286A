@@ -1,7 +1,5 @@
 package edu.berkeley.MetadataRepo;
 
-import com.mongodb.BasicDBObject;
-
 import java.util.Scanner;
 
 /**

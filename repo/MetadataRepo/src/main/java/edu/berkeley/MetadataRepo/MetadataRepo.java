@@ -58,7 +58,7 @@ public class MetadataRepo
             {
                 // Determine whether the user entered a timestamp or not
                 Long timestamp = null;
-                Date date = Parser.parseTime(cmds[cmds.length-1]);
+                Date date = Parser.parseTime(cmds[cmds.length-1], false);
                 if (date != null)
                     timestamp = date.getTime();
 
@@ -74,7 +74,7 @@ public class MetadataRepo
                 if (timestamp == null)
                     commit(currentNamespace, cmds[1], metadata.toString());
                 else
-                    commit(currentNamespace, cmds[1], metadata.toString(), timestamp - Parser.MILLISECOND_IN_A_DAY); // no need to add 1 day when committing
+                    commit(currentNamespace, cmds[1], metadata.toString(), timestamp); // no need to add 1 day when committing
             }
             // User can view all metadata in the database
             else if (act.equals("dump"))
@@ -98,7 +98,7 @@ public class MetadataRepo
             {
                 // Determine whether the user entered a timestamp or not
                 Long timestamp = null;
-                Date date = Parser.parseTime(cmds[cmds.length-1]);
+                Date date = Parser.parseTime(cmds[cmds.length-1], true);
                 if (date != null)
                     timestamp = date.getTime();
 
@@ -276,7 +276,7 @@ public class MetadataRepo
         if (time == null)
             date = new Date();
         else {
-            date = Parser.parseTime(time);
+            date = Parser.parseTime(time, true);
             if (date == null) {
                 System.out.println("Error: Syntax error in timestamp");
                 return;
@@ -364,7 +364,7 @@ public class MetadataRepo
         pipeline.add(new BasicDBObject("$match", qObj));
 
         // For debugging
-        // System.out.println(query + " -> " + qObj.toString());
+        System.out.println(query + " -> " + qObj.toString());
 
         // Execute the query
         AggregateIterable<Document> results = collection.aggregate(pipeline);
