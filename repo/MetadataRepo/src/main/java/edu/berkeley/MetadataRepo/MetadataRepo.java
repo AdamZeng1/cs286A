@@ -23,7 +23,7 @@ public class MetadataRepo
     private MongoClient mongoClient;
     private MongoDatabase database;
 
-    private static String currentNamespace = "test";
+    private static String currentNamespace = null;
 
     /**
      * Creates a connection to the metadata repository
@@ -63,14 +63,17 @@ public class MetadataRepo
 
                 StringBuilder metadata = new StringBuilder();
                 int bound = timestamp == null ? cmds.length : cmds.length - 1;
-                for (int i = 3; i < bound; i++)
+                for (int i = 2; i < bound; i++)
                     metadata.append(cmds[i]).append(" ");
 
-                // Execute commit
+                // Parameters for 'commit':
+                // cmd[1]: String file
+                // metadata: metadata of the file
+                // timestamp: long timestamp in millis
                 if (timestamp == null)
-                    commit(cmds[1], cmds[2], metadata.toString());
+                    commit(currentNamespace, cmds[1], metadata.toString());
                 else
-                    commit(cmds[1], cmds[2], metadata.toString(), timestamp);
+                    commit(currentNamespace, cmds[1], metadata.toString(), timestamp);
             }
             // User can view all metadata in the database
             else if (act.equals("dump"))
@@ -81,13 +84,12 @@ public class MetadataRepo
             else if (act.equals("show"))
             {
                 // Parameters for 'show':
-                // cmd[1]: String namespace
-                // cmd[2]: String file
-                // cmd[3]: String time
-                if (cmds.length == 4)
-                   show(cmds[1], cmds[2], cmds[3]);
+                // cmd[1]: String file
+                // cmd[2]: String time
+                if (cmds.length == 3)
+                    show(currentNamespace, cmds[1], cmds[2]);
                 else
-                    show(cmds[1], cmds[2]);
+                    show(currentNamespace, cmds[1]);
 
             }
             // User can view all files with a particular key-value pair from the database
@@ -101,17 +103,16 @@ public class MetadataRepo
 
                 StringBuilder query = new StringBuilder();
                 int bound = timestamp == null ? cmds.length : cmds.length - 1;
-                for (int i = 2; i < bound; i++)
+                for (int i = 1; i < bound; i++)
                     query.append(cmds[i]).append(" ");
 
                 // Parameters for 'find':
-                // cmd[1]: String namespace
                 // query: the query to be executed
                 // timestamp: long timestamp in millis
                 if (timestamp == null)
-                    find(cmds[1], query.toString());
+                    find(currentNamespace, query.toString());
                 else
-                    find(cmds[1], query.toString(), timestamp);
+                    find(currentNamespace, query.toString(), timestamp);
             }
             // User can delete a namespace from the database
             else if (act.equals("clear"))
@@ -119,6 +120,11 @@ public class MetadataRepo
                 // Parameters for 'clear':
                 // cmd[1]: String namespace
                 clear(cmds[1]);
+            }
+            else if (act.equals("namespace"))
+            {
+                currentNamespace = cmds[1];
+                System.out.println("Now using namespace '" + cmds[1] + "'");
             }
             // User does not input a valid command
             else
@@ -350,7 +356,8 @@ public class MetadataRepo
         // Finally, match the specified query
         pipeline.add(new BasicDBObject("$match", qObj));
 
-        System.out.println(query + " -> " + qObj.toString());
+        // For debugging
+        // System.out.println(query + " -> " + qObj.toString());
 
         // Execute the query
         AggregateIterable<Document> results = collection.aggregate(pipeline);
@@ -383,6 +390,6 @@ public class MetadataRepo
         collection.drop();
 
         // Print confirmation message
-        System.out.println("Repo " + namespace + " has been cleared");
+        System.out.println("Namespace '" + namespace + "' has been cleared");
     }
 }
