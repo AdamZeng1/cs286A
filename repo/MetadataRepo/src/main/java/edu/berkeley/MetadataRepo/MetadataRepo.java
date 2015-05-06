@@ -19,10 +19,11 @@ import java.util.List;
 public class MetadataRepo
 {
     private static final String TIMESTAMP = "__timestamp__";
-    private static final long MILLISECOND_IN_A_DAY = 86400000;
 
     private MongoClient mongoClient;
     private MongoDatabase database;
+
+    private static String currentNamespace = "test";
 
     /**
      * Creates a connection to the metadata repository
@@ -56,14 +57,14 @@ public class MetadataRepo
             {
                 // Determine whether the user entered a timestamp or not
                 Long timestamp = null;
-                try {timestamp = Long.parseLong(cmds[3]);}
-                catch (NumberFormatException e) {timestamp = null;}
-                int i = timestamp == null? 3 : 4;
+                Date date = Parser.parseTime(cmds[cmds.length-1]);
+                if (date != null)
+                    timestamp = date.getTime();
 
-                // Ignore spaces for the metadata argument
                 StringBuilder metadata = new StringBuilder();
-                for (; i < cmds.length; i++)
-                    metadata.append(cmds[i]);
+                int bound = timestamp == null ? cmds.length : cmds.length - 1;
+                for (int i = 3; i < bound; i++)
+                    metadata.append(cmds[i]).append(" ");
 
                 // Execute commit
                 if (timestamp == null)
@@ -82,6 +83,7 @@ public class MetadataRepo
                 // Parameters for 'show':
                 // cmd[1]: String namespace
                 // cmd[2]: String file
+                // cmd[3]: String time
                 if (cmds.length == 4)
                    show(cmds[1], cmds[2], cmds[3]);
                 else
@@ -91,14 +93,25 @@ public class MetadataRepo
             // User can view all files with a particular key-value pair from the database
             else if (act.equals("find"))
             {
+                // Determine whether the user entered a timestamp or not
+                Long timestamp = null;
+                Date date = Parser.parseTime(cmds[cmds.length-1]);
+                if (date != null)
+                    timestamp = date.getTime();
+
+                StringBuilder query = new StringBuilder();
+                int bound = timestamp == null ? cmds.length : cmds.length - 1;
+                for (int i = 2; i < bound; i++)
+                    query.append(cmds[i]).append(" ");
+
                 // Parameters for 'find':
                 // cmd[1]: String namespace
-                // cmd[2]: String keyword  (format: "key"="value")
-                // cmd[3]: String time
-                if (cmds.length == 4)
-                    find(cmds[1], cmds[2], cmds[3]);
+                // query: the query to be executed
+                // timestamp: long timestamp in millis
+                if (timestamp == null)
+                    find(cmds[1], query.toString());
                 else
-                    find(cmds[1], cmds[2]);
+                    find(cmds[1], query.toString(), timestamp);
             }
             // User can delete a namespace from the database
             else if (act.equals("clear"))
@@ -144,6 +157,11 @@ public class MetadataRepo
      */
     public void commit(String namespace, String file, String jsonMetadata, long timestamp)
     {
+        if (currentNamespace == null) {
+            System.out.println("Error: Please specify a namespace");
+            return;
+        }
+
         MongoCollection<Document> collection = database.getCollection(namespace);
 
         // Find a document with the given name
@@ -226,6 +244,11 @@ public class MetadataRepo
      */
     public void show(String namespace, String file, String time)
     {
+        if (currentNamespace == null) {
+            System.out.println("Error: Please specify a namespace");
+            return;
+        }
+
         // Retrieve the collection of documents in the specified namespace
         MongoCollection<Document> collection = database.getCollection(namespace);
 
@@ -236,20 +259,16 @@ public class MetadataRepo
         pipeline.add(new BasicDBObject("$unwind", "$metadata"));
 
         // Second, find the particular file that we're looking for, and it should not be more recent than the given timestamp
-        SimpleDateFormat sdf  = new SimpleDateFormat("MM/dd/yy");
         Date date;
         if (time == null)
             date = new Date();
-        else
-            // Try parsing timestamp in both MM/dd/yy format and long format
-            try {date = new Date(Long.parseLong(time)); }
-            catch (NumberFormatException nfe) {
-                try {date = new Date(sdf.parse(time).getTime() + MILLISECOND_IN_A_DAY);}
-                catch (ParseException pe) {
-                    System.out.println("Error: Syntax error in timestamp");
-                    return;
-                }
+        else {
+            date = Parser.parseTime(time);
+            if (date == null) {
+                System.out.println("Error: Syntax error in timestamp");
+                return;
             }
+        }
         pipeline.add(new BasicDBObject("$match", new BasicDBObject("file", file).append("metadata." + TIMESTAMP, new BasicDBObject("$lte", date))));
 
         // Third, sort by timestamp in descending order
@@ -261,19 +280,18 @@ public class MetadataRepo
         // Execute the query
         AggregateIterable<Document> results = collection.aggregate(pipeline);
 
-        boolean resultFound = false;
+        int resultFound = 0;
         SimpleDateFormat outFormat = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
 
         // Print the results
         for (Document d : results) {
-            resultFound = true;
+            resultFound++;
             Document meta = (Document) d.get("metadata");
             Date commitTime = (Date) meta.remove(TIMESTAMP);
             System.out.println(String.format("(Committed on %s) %s -> %s", outFormat.format(commitTime), d.get("file").toString(), meta.toJson()));
         }
 
-        if (!resultFound)
-            System.out.println("Result not found");
+        System.out.println(resultFound + " result" + (resultFound == 1 ? "" : "s") + " found");
     }
 
     /**
@@ -284,7 +302,7 @@ public class MetadataRepo
      */
     public void find(String namespace, String query)
     {
-        find(namespace, query, null);
+        find(namespace, query, System.currentTimeMillis());
     }
 
 
@@ -296,8 +314,20 @@ public class MetadataRepo
      * @param keyword
      * @param time
      */
-    public void find(String namespace, String query, String time)
+    public void find(String namespace, String query, long time)
     {
+        if (currentNamespace == null) {
+            System.out.println("Error: Please specify a namespace");
+            return;
+        }
+
+        // Check if query is syntactically correct
+        BasicDBObject qObj = Parser.parseExpression(query);
+        if (qObj == null) {
+            System.out.println("Error: Syntax error in query");
+            return;
+        }
+
         // Retrieve the collection of documents in the specified namespace
         MongoCollection<Document> collection = database.getCollection(namespace);
 
@@ -308,20 +338,7 @@ public class MetadataRepo
         pipeline.add(new BasicDBObject("$unwind", "$metadata"));
 
         // Second, give an upper bound for timestamp
-        SimpleDateFormat sdf  = new SimpleDateFormat("MM/dd/yy");
-        Date date;
-        if (time == null)
-            date = new Date();
-        else
-            // Try parsing timestamp in both MM/dd/yy format and long format
-            try {date = new Date(Long.parseLong(time)); }
-            catch (NumberFormatException nfe) {
-                try {date = new Date(sdf.parse(time).getTime() + MILLISECOND_IN_A_DAY);}
-                catch (ParseException pe) {
-                    System.out.println("Error: Syntax error in timestamp");
-                    return;
-                }
-            }
+        Date date = new Date(time);
         pipeline.add(new BasicDBObject("$match", new BasicDBObject("metadata." + TIMESTAMP, new BasicDBObject("$lte", date))));
 
         // Third, sort by timestamp in descending order
@@ -331,7 +348,9 @@ public class MetadataRepo
         pipeline.add(new BasicDBObject("$group", new BasicDBObject("_id", "$file").append("metadata", new BasicDBObject("$first", "$metadata"))));
 
         // Finally, match the specified query
-        pipeline.add(new BasicDBObject("$match", Document.parse(query)));
+        pipeline.add(new BasicDBObject("$match", qObj));
+
+        System.out.println(query + " -> " + qObj.toString());
 
         // Execute the query
         AggregateIterable<Document> results = collection.aggregate(pipeline);
@@ -347,10 +366,7 @@ public class MetadataRepo
             System.out.println(String.format("(Committed on %s) %s -> %s", outFormat.format(commitTime), d.get("_id").toString(), meta.toJson()));
         }
 
-        if (resultFound == 0)
-            System.out.println("Result not found");
-        else
-            System.out.println(resultFound + " results found");
+        System.out.println(resultFound + " result" + (resultFound == 1 ? "" : "s") + " found");
     }
 
 
