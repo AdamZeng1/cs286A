@@ -58,23 +58,22 @@ public class MetadataRepo
             {
                 // Determine whether the user entered a timestamp or not
                 Long timestamp = null;
-                Date date = Parser.parseTime(cmds[cmds.length-1], false);
+                Date date = Parser.parseTime(cmds[1], false);
                 if (date != null)
                     timestamp = date.getTime();
 
                 StringBuilder metadata = new StringBuilder();
-                int bound = timestamp == null ? cmds.length : cmds.length - 1;
-                for (int i = 2; i < bound; i++)
+                for (int i = timestamp == null? 2 : 3; i < cmds.length; i++)
                     metadata.append(cmds[i]).append(" ");
 
                 // Parameters for 'commit':
-                // cmd[1]: String file
+                // cmd[1 or 2]: String file
                 // metadata: metadata of the file
                 // timestamp: long timestamp in millis
                 if (timestamp == null)
                     commit(currentNamespace, cmds[1], metadata.toString());
                 else
-                    commit(currentNamespace, cmds[1], metadata.toString(), timestamp); // no need to add 1 day when committing
+                    commit(currentNamespace, cmds[2], metadata.toString(), timestamp); // no need to add 1 day when committing
             }
             // User can view all metadata in the database
             else if (act.equals("dump"))
@@ -85,10 +84,10 @@ public class MetadataRepo
             else if (act.equals("show"))
             {
                 // Parameters for 'show':
-                // cmd[1]: String file
-                // cmd[2]: String time
+                // cmd[1 or 2]: String file
+                // cmd[1]: String time
                 if (cmds.length == 3)
-                    show(currentNamespace, cmds[1], cmds[2]);
+                    show(currentNamespace, cmds[2], cmds[1]);
                 else
                     show(currentNamespace, cmds[1]);
 
@@ -98,13 +97,12 @@ public class MetadataRepo
             {
                 // Determine whether the user entered a timestamp or not
                 Long timestamp = null;
-                Date date = Parser.parseTime(cmds[cmds.length-1], true);
+                Date date = Parser.parseTime(cmds[1], true);
                 if (date != null)
                     timestamp = date.getTime();
 
                 StringBuilder query = new StringBuilder();
-                int bound = timestamp == null ? cmds.length : cmds.length - 1;
-                for (int i = 1; i < bound; i++)
+                for (int i = timestamp == null? 1 : 2; i < cmds.length; i++)
                     query.append(cmds[i]).append(" ");
 
                 // Parameters for 'find':
@@ -282,13 +280,16 @@ public class MetadataRepo
                 return;
             }
         }
-        pipeline.add(new BasicDBObject("$match", new BasicDBObject("file", file).append("metadata." + TIMESTAMP, new BasicDBObject("$lte", date))));
+        pipeline.add(new BasicDBObject("$match", new BasicDBObject("file", Parser.parseGlob(file)).append("metadata." + TIMESTAMP, new BasicDBObject("$lte", date))));
 
         // Third, sort by timestamp in descending order
         pipeline.add(new BasicDBObject("$sort", new BasicDBObject("metadata." + TIMESTAMP, -1)));
 
-        // Finally, limit the output to 1, so it only displays the most recent metadata before the specified timestamp
-        pipeline.add(new BasicDBObject("$limit", 1));
+        // Finally, group by filename and get the first metadata to get the most recent metadata before the given timestamp (since it was sorted)
+        pipeline.add(new BasicDBObject("$group", new BasicDBObject("_id", "$file").append("metadata", new BasicDBObject("$first", "$metadata"))));
+
+        // For debugging
+        // System.out.println("Query -> " + pipeline.toString());
 
         // Execute the query
         AggregateIterable<Document> results = collection.aggregate(pipeline);
@@ -301,7 +302,7 @@ public class MetadataRepo
             resultFound++;
             Document meta = (Document) d.get("metadata");
             Date commitTime = (Date) meta.remove(TIMESTAMP);
-            System.out.println(String.format("(Committed on %s) %s -> %s", outFormat.format(commitTime), d.get("file").toString(), meta.toJson()));
+            System.out.println(String.format("(Committed on %s) %s -> %s", outFormat.format(commitTime), d.get("_id").toString(), meta.toJson()));
         }
 
         System.out.println(resultFound + " result" + (resultFound == 1 ? "" : "s") + " found");
@@ -364,7 +365,7 @@ public class MetadataRepo
         pipeline.add(new BasicDBObject("$match", qObj));
 
         // For debugging
-        System.out.println(query + " -> " + qObj.toString());
+        //System.out.println(query + " -> " + qObj.toString());
 
         // Execute the query
         AggregateIterable<Document> results = collection.aggregate(pipeline);
