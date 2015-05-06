@@ -241,7 +241,15 @@ public class MetadataRepo
         if (time == null)
             date = new Date();
         else
-            try {date = new Date(Long.parseLong(time)); } catch (NumberFormatException nfe) { try {date = new Date(sdf.parse(time).getTime() + MILLISECOND_IN_A_DAY);} catch (ParseException pe) {System.out.println("Error: Syntax error in timestamp"); return;}} // Try parsing timestamp in both MM/dd/yy format and long format
+            // Try parsing timestamp in both MM/dd/yy format and long format
+            try {date = new Date(Long.parseLong(time)); }
+            catch (NumberFormatException nfe) {
+                try {date = new Date(sdf.parse(time).getTime() + MILLISECOND_IN_A_DAY);}
+                catch (ParseException pe) {
+                    System.out.println("Error: Syntax error in timestamp");
+                    return;
+                }
+            }
         pipeline.add(new BasicDBObject("$match", new BasicDBObject("file", file).append("metadata." + TIMESTAMP, new BasicDBObject("$lte", date))));
 
         // Third, sort by timestamp in descending order
@@ -265,7 +273,7 @@ public class MetadataRepo
         }
 
         if (!resultFound)
-            System.out.println("Metadata not found");
+            System.out.println("Result not found");
     }
 
     /**
@@ -274,9 +282,9 @@ public class MetadataRepo
      * @param namespace
      * @param keyword
      */
-    public void find(String namespace, String keyword)
+    public void find(String namespace, String query)
     {
-        find(namespace, keyword, "None");
+        find(namespace, query, null);
     }
 
 
@@ -288,121 +296,61 @@ public class MetadataRepo
      * @param keyword
      * @param time
      */
-    public void find(String namespace, String keyword, String time)
+    public void find(String namespace, String query, String time)
     {
-        // Initialize variables for checking the date
-        boolean checkTime = false;
-        long endTime = 0;
-        Date date;
-        SimpleDateFormat sdf  = new SimpleDateFormat("MM/dd/yy");
-
-        if (!time.equals("None")) {
-            // User has entered a value for the 'time' parameter
-
-            // Set 'checkTime' flag
-            checkTime = true;
-
-            // Ensure that the time entered is in the appropriate format
-            try {
-                date = sdf.parse(time);
-            } catch (ParseException e) {
-                System.out.println("Time should be in MM/dd/yy format.");
-                return;
-            }
-
-            // Set the end time of our search as the end-of-day of the specified date
-            endTime = date.getTime() + 86400000;
-            // NOTE: 86400000 equals the number of milliseconds in a day (1000*60*60*24)
-        }
-
-        // Retrieve the key and value pair that the user specifies
-        //      (Assumes the format for the 'keyword' parameter as: "key"="value")
-        String[] kv_pair = keyword.split("=");
-
         // Retrieve the collection of documents in the specified namespace
         MongoCollection<Document> collection = database.getCollection(namespace);
 
-        // Initialize variables for checking the query
-        BasicDBObject query;
-        String fileName;
-        int fileCount = 0;
-        long compTime = 0;
-        MongoCursor k;
+        // A list to hold the pipeline steps for MongoDB's aggregate
+        List<BasicDBObject> pipeline = new ArrayList<BasicDBObject>();
 
-        if (!checkTime) {
-            // 'checkTime' is false: the user did not provide the optional 'time' parameter
+        // First, unwind the metadata array. See MongoDB documentation to understand what unwind does.
+        pipeline.add(new BasicDBObject("$unwind", "$metadata"));
 
-            if (kv_pair[1].equals("*")) {
-                // Query on metadata with the specified key and any value
-                query = new BasicDBObject("metadata", new BasicDBObject("$elemMatch",
-                            new BasicDBObject(kv_pair[0], new BasicDBObject("$exists",true))));
-            } else {
-                // Query on metadata with the specified key-value pair
-                query = new BasicDBObject("metadata", new BasicDBObject("$elemMatch",
-                            new BasicDBObject(kv_pair[0], kv_pair[1])));
-            }
-            // Get a cursor (pointer) to the documents containing the query
-            FindIterable<Document> cursor = collection.find(query);
-            // Set k to the head of the iterator of documents
-            k = cursor.iterator();
-
-        } else {
-            // 'checkTime' is true: the user provided the optional 'time' parameter
-
-            if (kv_pair[1].equals("*")) {
-                // Query on metadata with the specified key and any value;
-                //  searches from beginning of history to the time specified
-                query = new BasicDBObject("metadata", new BasicDBObject("$elemMatch",
-                            new BasicDBObject(TIMESTAMP, new BasicDBObject("$lte", new Date(endTime)))
-                                    .append(kv_pair[0], new BasicDBObject("$exists", true))));
-            } else {
-                // Query on metadata with the specified key-value pair;
-                //  searches from beginning of history to the time specified
-                query = new BasicDBObject("metadata", new BasicDBObject("$elemMatch",
-                            new BasicDBObject(TIMESTAMP, new BasicDBObject("$lte", new Date(endTime)))
-                                    .append(kv_pair[0], kv_pair[1])));
-            }
-            // Get a cursor (pointer) to the documents containing the query
-            FindIterable<Document> cursor = collection.find(query);
-            // Set k to the head of the iterator of documents
-            k = cursor.iterator();
-        }
-
-        while (k.hasNext()) {
-            // Get the name of the document file
-            Document d = (Document) k.next();
-            ArrayList<Document> metadataList = (ArrayList<Document>) d.get("metadata");
-            fileName = (String) d.get("file");
-
-            long maxxTime = 0;
-            int maxxInt = 0;
-
-            for (int i = 0; i < metadataList.size(); i++) {
-                compTime =  ((Date) metadataList.get(i).get(TIMESTAMP)).getTime();
-                if ( ( checkTime && (compTime <= endTime && compTime > maxxTime) ) ||
-                        ( !checkTime && ( compTime > maxxTime ) )) {
-                    // Set 'maxxTime' to be either the time of the latest commit up to the specified 'time'
-                    //  or the time of the most recent commit
-                    maxxTime = compTime;
-                    // Set maxxInt to be the index of 'metadataList' that 'maxxTime' is at
-                    maxxInt = i;
+        // Second, give an upper bound for timestamp
+        SimpleDateFormat sdf  = new SimpleDateFormat("MM/dd/yy");
+        Date date;
+        if (time == null)
+            date = new Date();
+        else
+            // Try parsing timestamp in both MM/dd/yy format and long format
+            try {date = new Date(Long.parseLong(time)); }
+            catch (NumberFormatException nfe) {
+                try {date = new Date(sdf.parse(time).getTime() + MILLISECOND_IN_A_DAY);}
+                catch (ParseException pe) {
+                    System.out.println("Error: Syntax error in timestamp");
+                    return;
                 }
             }
+        pipeline.add(new BasicDBObject("$match", new BasicDBObject("metadata." + TIMESTAMP, new BasicDBObject("$lte", date))));
 
-            if (metadataList.get(maxxInt).get(kv_pair[0]) != null) {
-                if (kv_pair[1].equals("*") || metadataList.get(maxxInt).get(kv_pair[0]).equals(kv_pair[1])
-                    || (metadataList.get(maxxInt).get(kv_pair[0]).getClass() == ArrayList.class
-                        && ((ArrayList<String>) metadataList.get(maxxInt).get(kv_pair[0])).contains(kv_pair[1]))) {
-                    // Find the name of the file at the index calculated in the loop above
-                    System.out.print(fileName + ": ");
-                    System.out.println(metadataList.get(maxxInt).toJson());
-                    // Increment the count of files that contain the query on 'keyword'
-                    fileCount++;
-                }
-            }
+        // Third, sort by timestamp in descending order
+        pipeline.add(new BasicDBObject("$sort", new BasicDBObject("metadata." + TIMESTAMP, -1)));
+
+        // Fourth, group by file name, and only pick the first metadata (because it should be the most recent one, since it has been sorted)
+        pipeline.add(new BasicDBObject("$group", new BasicDBObject("_id", "$file").append("metadata", new BasicDBObject("$first", "$metadata"))));
+
+        // Finally, match the specified query
+        pipeline.add(new BasicDBObject("$match", Document.parse(query)));
+
+        // Execute the query
+        AggregateIterable<Document> results = collection.aggregate(pipeline);
+
+        int resultFound = 0;
+        SimpleDateFormat outFormat = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
+
+        // Print the results
+        for (Document d : results) {
+            resultFound++;
+            Document meta = (Document) d.get("metadata");
+            Date commitTime = (Date) meta.remove(TIMESTAMP);
+            System.out.println(String.format("(Committed on %s) %s -> %s", outFormat.format(commitTime), d.get("_id").toString(), meta.toJson()));
         }
 
-        System.out.println(fileCount + " records found.");
+        if (resultFound == 0)
+            System.out.println("Result not found");
+        else
+            System.out.println(resultFound + " results found");
     }
 
 
@@ -419,8 +367,6 @@ public class MetadataRepo
         collection.drop();
 
         // Print confirmation message
-        System.out.println("=======================================================================");
         System.out.println("Repo " + namespace + " has been cleared");
-        System.out.println("=======================================================================");
     }
 }
