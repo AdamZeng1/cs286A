@@ -154,7 +154,7 @@ public class SimpleJsonSource implements Source<String, String> {
           intermediate.put("isOther", String.valueOf(attr.isOther()));
           intermediate.put("isRegularFile", String.valueOf(attr.isRegularFile()));
           intermediate.put("isSymbolicLink", String.valueOf(attr.isSymbolicLink()));
-          intermediate.put("size", String.valueOf(attr.size()));
+          intermediate.put("size", attr.size());
 
     // Create intermediate temp file
           nameCount += 1;

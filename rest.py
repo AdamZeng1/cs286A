@@ -46,12 +46,11 @@ class parse:
             if current_row == 1: # Skip heading row
                 header = row
 
+        column_count = len(header)
+        json_data['column_count'] = column_count
+        json_data['cell_count'] = current_row*column_count
         json_data['row_count'] = current_row
         json_data['header'] = header
-
-
-
-
 
 
         file_args = file_name.split('.')

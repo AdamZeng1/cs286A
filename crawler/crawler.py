@@ -45,7 +45,7 @@ if command == 'start' or command == 'run' or command == 'gogobunnies':
     pull_file.write(d + ',')
   pull_file.write("""
   # source data schema
-  source.schema={"namespace":"example.avro", "type":"record", "name":"User", "fields":[{"name":"filename", "type":"string"}, {"name":"timestamp", "type":"string"}, {"name":"namespace", "type":"string"}, {"name":"lastAccessTime", "type":"string"}, {"name":"lastModifiedTime",  "type":"string"}, {"name":"creationTime", "type":"string"} , {"name":"size", "type":"string"}, {"name":"isSymbolicLink", "type":"string"}, {"name":"isRegularFile", "type":"string"}, {"name":"isOther", "type":"string"}, {"name":"isDirectory", "type":"string"}]}
+  source.schema={"namespace":"example.avro", "type":"record", "name":"User", "fields":[{"name":"filename", "type":"string"}, {"name":"timestamp", "type":"string"}, {"name":"namespace", "type":"string"}, {"name":"lastAccessTime", "type":"string"}, {"name":"lastModifiedTime",  "type":"string"}, {"name":"creationTime", "type":"string"} , {"name":"size", "type":"int"}, {"name":"isSymbolicLink", "type":"string"}, {"name":"isRegularFile", "type":"string"}, {"name":"isOther", "type":"string"}, {"name":"isDirectory", "type":"string"}]}
 
   # quality checker configuration properties
   qualitychecker.task.policies=gobblin.policies.count.RowCountPolicy,gobblin.policies.schema.SchemaCompatibilityPolicy
