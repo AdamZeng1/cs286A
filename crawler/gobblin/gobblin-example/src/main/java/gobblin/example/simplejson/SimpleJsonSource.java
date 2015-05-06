@@ -148,14 +148,14 @@ public class SimpleJsonSource implements Source<String, String> {
           intermediate.put("timestamp", String.valueOf((new Date()).getTime()));
           intermediate.put("namespace", getMacAddress());
 
-          intermediate.put("creationTime", String.valueOf(attr.creationTime()));
-          intermediate.put("lastAccessTime", String.valueOf(attr.lastAccessTime()));
-          intermediate.put("lastModifiedTime", String.valueOf(attr.lastModifiedTime()));
+          intermediate.put("creationTime", attr.creationTime().toMillis());
+          intermediate.put("lastAccessTime", attr.lastAccessTime().toMillis());
+          intermediate.put("lastModifiedTime", attr.lastModifiedTime().toMillis());
           intermediate.put("isDirectory", String.valueOf(attr.isDirectory()));
           intermediate.put("isOther", String.valueOf(attr.isOther()));
           intermediate.put("isRegularFile", String.valueOf(attr.isRegularFile()));
           intermediate.put("isSymbolicLink", String.valueOf(attr.isSymbolicLink()));
-          intermediate.put("size", String.valueOf(attr.size()));
+          intermediate.put("size", attr.size());
 
     // Create intermediate temp file
           nameCount += 1;
