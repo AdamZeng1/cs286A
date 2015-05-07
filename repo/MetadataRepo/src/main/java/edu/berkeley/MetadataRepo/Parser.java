@@ -120,6 +120,16 @@ public class Parser {
                 return null;
             return new BasicDBObject(key, new BasicDBObject("$ne",value)).append(key, new BasicDBObject("$exists", true));
         }
+        // Parse 'like'
+        else if (expression.toLowerCase().contains(" like "))
+        {
+            int i = expression.toLowerCase().indexOf("like");
+            String key = parseKey(expression.substring(0, i));
+            BasicDBObject value = parseGlob(expression.substring(i + 4));
+            if (key == null || value == null)
+                return null;
+            return new BasicDBObject(key, value);
+        }
         // Parse '='
         else if (expression.contains("="))
         {
