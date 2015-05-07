@@ -366,7 +366,7 @@ public class MetadataRepo
         pipeline.add(new BasicDBObject("$match", qObj));
 
         // For debugging
-        //System.out.println(query + " -> " + qObj.toString());
+        System.out.println(query + " -> " + qObj.toString());
 
         // Execute the query
         AggregateIterable<Document> results = collection.aggregate(pipeline);

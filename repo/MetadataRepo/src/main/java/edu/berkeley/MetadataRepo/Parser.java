@@ -45,6 +45,10 @@ public class Parser {
      */
     public static BasicDBObject parseGlob(String glob)
     {
+        // Is it an explicit string?
+        if (glob.startsWith("\"") && glob.endsWith("\""))
+            glob = glob.substring(1, glob.length()-1);
+
         glob = glob.trim();
         glob = glob.replace(".", "\\.");
         glob = glob.replace("*", ".*");
@@ -64,14 +68,16 @@ public class Parser {
     public static BasicDBObject parseExpression(String expression)
     {
         expression = expression.trim();
+        System.out.println(expression);
+
 
         // Parse 'or'
         if (expression.toLowerCase().contains(" or "))
         {
-            int i = expression.toLowerCase().indexOf("or");
+            int i = expression.toLowerCase().indexOf(" or ");
             ArrayList<BasicDBObject> conditions = new ArrayList<BasicDBObject>();
             BasicDBObject left = parseExpression(expression.substring(0, i));
-            BasicDBObject right = parseExpression(expression.substring(i + 3));
+            BasicDBObject right = parseExpression(expression.substring(i + 4));
             if (left == null || right == null)
                 return null;
             conditions.add(new BasicDBObject(left));
@@ -81,10 +87,10 @@ public class Parser {
         // Parse 'and'
         else if (expression.toLowerCase().contains(" and "))
         {
-            int i = expression.toLowerCase().indexOf("and");
+            int i = expression.toLowerCase().indexOf(" and ");
             ArrayList<BasicDBObject> conditions = new ArrayList<BasicDBObject>();
             BasicDBObject left = parseExpression(expression.substring(0, i));
-            BasicDBObject right = parseExpression(expression.substring(i + 3));
+            BasicDBObject right = parseExpression(expression.substring(i + 5));
             if (left == null || right == null)
                 return null;
             conditions.add(new BasicDBObject(left));
@@ -139,14 +145,14 @@ public class Parser {
             Object value = parseValue(expression.substring(i + 2));
             if (key == null || value == null)
                 return null;
-            return new BasicDBObject(key, new BasicDBObject("$ne",value)).append(key, new BasicDBObject("$exists", true));
+            return new BasicDBObject(key, new BasicDBObject("$ne",value).append("$exists", true));
         }
         // Parse 'like'
         else if (expression.toLowerCase().contains(" like "))
         {
-            int i = expression.toLowerCase().indexOf("like");
+            int i = expression.toLowerCase().indexOf(" like ");
             String key = parseKey(expression.substring(0, i));
-            BasicDBObject value = parseGlob(expression.substring(i + 4));
+            BasicDBObject value = parseGlob(expression.substring(i + 6));
             if (key == null || value == null)
                 return null;
             return new BasicDBObject(key, value);
