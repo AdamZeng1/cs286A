@@ -149,9 +149,9 @@ public class MetadataRepo
     /**
      * This function allows the user to enter metadata into the database
      *
-     * @param namespace
-     * @param file
-     * @param jsonMetadata
+     * @param namespace the target namespace
+     * @param file the filename to commit
+     * @param jsonMetadata the metadata of the file
      */
     public void commit(String namespace, String file, String jsonMetadata)
     {
@@ -161,10 +161,10 @@ public class MetadataRepo
     /**
      * This function allows the user to enter metadata into the database
      *
-     * @param namespace
-     * @param file
-     * @param jsonMetadata
-     * @param timestamp
+     * @param namespace the target namespace
+     * @param file the filename to commit
+     * @param jsonMetadata the metadata of the file
+     * @param timestamp the timestamp of this metadata, formatted as ms since epoch
      */
     public void commit(String namespace, String file, String jsonMetadata, long timestamp)
     {
@@ -236,10 +236,10 @@ public class MetadataRepo
     }
 
     /**
+     * Show the latest metadata of a file
      *
-     *
-     * @param namespace
-     * @param file
+     * @param namespace the target namespace
+     * @param file the file that you want to show the metadata of
      */
     public void show(String namespace, String file)
     {
@@ -247,11 +247,11 @@ public class MetadataRepo
     }
 
     /**
-     * This function allows the user to view a particular file from the database
+     * Show the latest metadata of a file
      *
-     * @param namespace
-     * @param file
-     * @param time
+     * @param namespace the target namespace
+     * @param file the file that you want to show the metadata of
+     * @param time snapshot the repo at this point of time (formatted "MM/dd/yy" or number of ms since epoch)
      */
     public void show(String namespace, String file, String time)
     {
@@ -309,10 +309,11 @@ public class MetadataRepo
     }
 
     /**
+     * This function allows the user to view all files with a particular key-value pair from the database
+     * (Assumes the metadata is at most one degree nested)
      *
-     *
-     * @param namespace
-     * @param keyword
+     * @param namespace the target namespace
+     * @param query the query to execute
      */
     public void find(String namespace, String query)
     {
@@ -324,9 +325,9 @@ public class MetadataRepo
      * This function allows the user to view all files with a particular key-value pair from the database
      * (Assumes the metadata is at most one degree nested)
      *
-     * @param namespace
-     * @param keyword
-     * @param time
+     * @param namespace the target namespace
+     * @param query the query to execute
+     * @param time snapshot the repo at this point of time
      */
     public void find(String namespace, String query, long time)
     {
@@ -385,9 +386,10 @@ public class MetadataRepo
     }
 
     /**
+     * Permanently remove a particular file from the repo
      *
-     * @param namespace
-     * @param file
+     * @param namespace the target namespace
+     * @param file the file to remove
      */
     public void remove(String namespace, String file)
     {
@@ -407,7 +409,7 @@ public class MetadataRepo
     /**
      * This function allows the user to delete a namespace from the database
      *
-     * @param namespace
+     * @param namespace the namespace to delete
      */
     public void clear(String namespace)
     {

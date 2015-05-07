@@ -14,6 +14,13 @@ public class Parser {
 
     private static final long MILLISECOND_IN_A_DAY = 86400000 - 1;
 
+    /**
+     * Parse a string (formatted as "MM/dd/yy" or number of ms since epoch) into a Date
+     *
+     * @param time the string to parse
+     * @param endOfDay if given a string in "MM/dd/yy" format and endOfDay is true, then this function returns a date at MM/dd/yy 23:59:59
+     * @return the result as a Date object
+     */
     public static Date parseTime(String time, boolean endOfDay)
     {
         time = time.trim();
@@ -29,6 +36,13 @@ public class Parser {
         }
     }
 
+
+    /**
+     * Parse UNIX-style glob string. Now only supports * and ? wildcard characters
+     *
+     * @param glob the string to parse
+     * @return the result, formatted to MongoDB syntax
+     */
     public static BasicDBObject parseGlob(String glob)
     {
         glob = glob.trim();
@@ -40,6 +54,13 @@ public class Parser {
         return new BasicDBObject("$regex", glob);
     }
 
+
+    /**
+     * Parse an expression. For any query expression, this should be the start of the grammar.
+     *
+     * @param expression the expression to parse
+     * @return the result, formatted to MongoDB syntax
+     */
     public static BasicDBObject parseExpression(String expression)
     {
         expression = expression.trim();
@@ -144,11 +165,26 @@ public class Parser {
         return null;
     }
 
+
+    /**
+     * Parse a string that represents a key in the metadata key-value pairs.
+     *
+     * @param key the string to parse
+     * @return the result, formatted as "metadata.key"
+     */
     private static String parseKey(String key)
     {
         return "metadata." + key.trim();
     }
 
+
+    /**
+     * Parse a string that represents a value in the metadata key-value pairs.
+     * Currently only supports string literals, decimal, and floating point
+     *
+     * @param value the string to parse
+     * @return the result, formatted as an Object with the proper type of the value
+     */
     private static Object parseValue(String value)
     {
         value = value.trim();
