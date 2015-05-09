@@ -16,16 +16,18 @@ class MyApplication(web.application):
 
 class parse:
     def GET(self, usr_input):
-        
+       
         full_path = os.path.realpath(__file__)
 
         this_file_dir = os.path.dirname(full_path)
-
+  
         args = usr_input.split('/')
-        file_name = args[len(args)-1]
+        identifier = args[-1]
+        file_name = args[-2]
+        path = "/".join(args[:-1])
+        print "PATH: " + path
 
-
-        os.system("scp /"+usr_input + " " + this_file_dir)
+        os.system("scp /"+ path + " " + this_file_dir)
         json_data = {}
         # with open(file_name) as csvfile:
         #     row_count = sum(1 for row in csvfile)
@@ -44,7 +46,7 @@ class parse:
             current_row += 1
 
             if current_row == 1: # Skip heading row
-                header = row
+                header = " ".join(row)
 
         column_count = len(header)
         json_data['column_count'] = column_count
@@ -55,10 +57,10 @@ class parse:
 
         file_args = file_name.split('.')
         name_wo_extension = file_args[0]
-        name_as_json = name_wo_extension + '.json'
+        name_as_json = name_wo_extension + '_' + identifier + '.json'
         with open(name_as_json, 'w') as outfile:
             json.dump(json_data, outfile)
-        os.system("scp " + name_as_json + " " + this_file_dir + "/crawler/gobblin/test_source/")
+        os.system("scp " + name_as_json + " " + this_file_dir + "/crawler/gobblin/test_workdir/externals/")
         return json.dumps(json_data)
 
 

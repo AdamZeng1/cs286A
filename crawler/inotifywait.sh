@@ -10,5 +10,5 @@
 
 inotifywait -r -m "${1}" --format '%w%f' -e modify,moved_to,create |
   while read file; do
-    ./action.sh ${1} ${2} $file
+    ./action_csv.sh ${1} ${2} $file
   done

@@ -15,21 +15,31 @@
 dir_path=${3}
 output_dir=$(echo $3 | sed 's/\(.*\/\)\(.*_append$\)/\2/')
 
-# if dir_path contains /job-output/, then process
+# Process changes to Gobblin output
 if [[ $dir_path == *"job-output/gobblin/example/simplejson/ExampleTable"* && $dir_path != *".avro" && $dir_path != *".avro.crc" ]]
 then
   expected_file=gobblin/gobblin-dist/test_temp/numFiles.txt
   expected_num_files=`cat $expected_file` > /dev/null 2>&1
-
+  job_staging=gobblin/test_workdir/job-staging
   num_files=$(ls -l ${dir_path}/*.avro | wc -l)
 
   if [ "$num_files" -eq "$expected_num_files" ]
   then
-    echo "creating tar archive for ${dir_path}"
-    tar -czf "${1}/../output-tarballs/${output_dir}.tar.gz" -C ${dir_path} .
-    echo "transferring to ${2}"
-    echo "${1}/../output-tarballs/${output_dir}.tar.gz"
-    scp -i ec2.pem "${1}/../output-tarballs/${output_dir}.tar.gz" ${2}
+    cp -rf $dir_path $job_staging
+    ./merge_dir.py $job_staging
+  fi
+# Process changes to external output
+elif [[ $dir_path == *"test_workdir/externals"* ]]
+then
+  expected_file=gobblin/gobblin-dist/test_temp/numCsvFiles.txt
+  expected_num_files=`cat $expected_file` > /dev/null 2>&1
+  job_staging=gobblin/test_workdir/job-staging
+  num_files=$(ls -l gobblin/test_workdir/externals/*.json 2> /dev/null | wc -l)
+
+  if [ "$num_files" -eq "$expected_num_files" ]
+  then
+    cp gobblin/test_workdir/externals/* $job_staging
+    ./merge_dir.py $job_staging
   fi
 fi
 # else ignore
