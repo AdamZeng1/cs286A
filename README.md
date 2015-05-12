@@ -1,8 +1,6 @@
 # cs286A
 General Repo for CS286A projects
 
-*** This document under heavy revision ***
-
 In the large, the class project is intended to prototype infrastructure for managing metadata and lineage in the Apache Big Data context.  The project should have three phases:
   1. requirements gathering (2 weeks)
   2. functional specification and design (2 weeks) 
