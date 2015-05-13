@@ -71,6 +71,8 @@ if command == 'start' or command == 'run' or command == 'gogobunnies':
 
   # create work and output directories
   subprocess.call(["mkdir", "gobblin/test_workdir"])
+  subprocess.call(["mkdir", "gobblin/test_workdir/job-staging"])
+  subprocess.call(["mkdir", "gobblin/test_workdir/externals"])
   subprocess.call(["mkdir", "gobblin/output-tarballs"])
 
   # build path to output directory so we can setup a watch on it (a bit hacky)
