@@ -1,4 +1,14 @@
 # cs286A
+
+### UPDATE: DOCUMENTATION
+The primary work done for this project is compartmentalized into three groups (see section below).
+Documentation for each group is located in a .../doc folder in the respective folder of each group:
+- cs286a/crawler/
+- cs286a/dataMover/
+- cs286a/repo/
+
+### Thoughts from March 2015
+
 General Repo for CS286A projects
 
 In the large, the class project is intended to prototype infrastructure for managing metadata and lineage in the Apache Big Data context.  The project should have three phases:
