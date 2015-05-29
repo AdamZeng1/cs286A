@@ -3,9 +3,9 @@
 ### UPDATE: DOCUMENTATION
 The primary work done for this project is compartmentalized into three groups (see section below).
 Documentation for each group is located in a .../doc folder in the respective folder of each group:
-- cs286a/crawler/
-- cs286a/dataMover/
-- cs286a/repo/
+- cs286a/crawler/doc/
+- cs286a/dataMover/doc/
+- cs286a/repo/doc/
 
 ### Thoughts from March 2015
 
